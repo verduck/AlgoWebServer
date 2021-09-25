@@ -12,11 +12,12 @@ import Button from '@mui/material/Button';
 import LoginDialog from './components/LoginDialog';
 import Home from './views/Home';
 import Board from './views/Board';
+import Write from './views/Write';
 import { Typography } from '@mui/material';
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 
 const BluredAppBar = styled(AppBar)(({ theme }) => ({
-  backdropFilter: 'blur(20px)',
+  backdropFilter: 'blur(10px)',
   boxShadow: 'inset 0px -1px 1px #eaeef3',
   backgroundColor: alpha("#ffffff", 0.72)
 }));
@@ -41,7 +42,7 @@ export default class App extends React.Component {
     return (
       <Router>
         <div className="App">
-          <BluredAppBar position="sticky">
+          <BluredAppBar>
             <Toolbar>
               <Link style={{ color: "inherit" }} href="/">
                 <IconButton
@@ -77,6 +78,7 @@ export default class App extends React.Component {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/board" component={Board} />
+            <Route path="/write" component={Write} />
           </Switch>
         </div>
       </Router>
