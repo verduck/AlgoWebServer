@@ -1,7 +1,16 @@
 import React from 'react';
-import { Container, Grid, Box, Typography, Divider, FormControl, OutlinedInput } from '@mui/material';
-import { EditorState } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
+import { Container, Grid, Box, Typography, Divider, FormControl, OutlinedInput, ButtonGroup, IconButton } from '@mui/material';
+import { Editor, EditorState} from "draft-js";
+import { styled } from '@mui/material/styles';
+
+const EditorControl = styled(FormControl)(({ theme }) => ({
+	border: 'solid grey',
+	borderWidth: 'thin',
+  borderRadius: theme.shape.borderRadius,
+	'&:hover': {
+		borderColor: theme.palette.text.primary
+	},
+}));
 
 class Write extends React.Component {
 	constructor(props) {
@@ -9,8 +18,18 @@ class Write extends React.Component {
 		this.state = { editorState: EditorState.createEmpty() };
 	}
 
+	setEditor = (editor) => {
+		this.editor = editor;
+	}
+
 	onEditorStateChange = (editorState) => {
 		this.setState({ editorState });
+	}
+
+	onFocusEditor = () => {
+		if (this.editor) {
+			this.editor.focus();
+		}
 	}
 
 	render() {
@@ -18,15 +37,15 @@ class Write extends React.Component {
 			<Container maxWidth={false}>
 				<Grid container alignContent="center" style={{ minHeight: "100vh" }}>
 					<Box textAlign="center" mx="auto">
-						<Typography align="left" gutterBottom  variant="h4">글 작성하기</Typography>
+						<Typography align="left" gutterBottom  variant="h4">게시물 작성</Typography>
 						<Divider />
 						<Box component="form" width="512dp">
-							<FormControl margin="normal" sx={{ width: '100ch' }}>
+							<FormControl margin="normal" sx={{ width: '100ch' }} onClick={this.forceUpdate}>
 								<OutlinedInput placeholder="제목" />
 							</FormControl>
-							<FormControl margin="normal" sx={{ width: '100ch' }}>
-								<Editor editorState={this.state.editorState} onEditorStateChange={this.onEditorStateChange} placeholder="내용을 입력하세요." />
-							</FormControl>
+							<EditorControl margin="normal" sx={{ width: '100ch' }}>
+								<Editor ref={this.setEditor} editorState={this.state.editorState} onChange={this.onEditorStateChange} />
+							</EditorControl>
 						</Box>
 					</Box>
 				</Grid>
