@@ -77,8 +77,8 @@ export default class App extends React.Component {
           <LoginDialog open={this.state.open} onClose={this.handleClose} />
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/board" component={Board} />
-            <Route path="/write" component={Write} />
+            <Route exact path="/board" component={Board} />
+            <Route exact path="/write" component={Write} />
           </Switch>
         </div>
       </Router>

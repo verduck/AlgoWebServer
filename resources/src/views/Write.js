@@ -1,7 +1,7 @@
 import React from 'react';
-import { Container, Grid, Box, Typography, Divider, FormControl, OutlinedInput } from '@mui/material';
-import { EditorState } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
+import { Container, Grid, Box, Typography, Divider, FormControl, OutlinedInput, Button } from '@mui/material';
+import { EditorState, RichUtils } from "draft-js";
+import RichEditor from '../components/RichEditor';
 
 class Write extends React.Component {
 	constructor(props) {
@@ -9,24 +9,38 @@ class Write extends React.Component {
 		this.state = { editorState: EditorState.createEmpty() };
 	}
 
-	onEditorStateChange = (editorState) => {
+	onClickUndo = () => {
+		this.onEditorStateChange(EditorState.undo(this.state.editorState));
+	}
+
+	onClickRedo = () => {
+		this.onEditorStateChange(EditorState.redo(this.state.editorState));
+	}
+
+	onToggleInlineStyle = (style) => (event) => {
+		event.preventDefault();
+		this.onEditorStateChange(RichUtils.toggleInlineStyle(this.state.editorState, style));
+	}
+
+	onEditorChange = (editorState) => {
 		this.setState({ editorState });
 	}
 
 	render() {
 		return(
 			<Container maxWidth={false}>
-				<Grid container alignContent="center" style={{ minHeight: "100vh" }}>
-					<Box textAlign="center" mx="auto">
-						<Typography align="left" gutterBottom  variant="h4">글 작성하기</Typography>
+				<Grid container alignContent="center" style={{ minHeight: "100vh", maxHeight: "100vh" }}>
+					<Box textAlign="center" mx="auto"  width="1024px" maxWidth="1024px">
+						<Typography align="left" gutterBottom  variant="h4">게시물 작성</Typography>
 						<Divider />
-						<Box component="form" width="512dp">
-							<FormControl margin="normal" sx={{ width: '100ch' }}>
+						<Box component="form">
+							<FormControl margin="normal" sx={{ width: '100%' }}>
 								<OutlinedInput placeholder="제목" />
 							</FormControl>
-							<FormControl margin="normal" sx={{ width: '100ch' }}>
-								<Editor editorState={this.state.editorState} onEditorStateChange={this.onEditorStateChange} placeholder="내용을 입력하세요." />
+							<FormControl margin="normal" sx={{ width: '100%' }}>
+								<RichEditor editorState={this.state.editorState} onChange={this.onEditorChange.bind(this)} />
 							</FormControl>
+							<Button fullWidth variant="contained" sx={{ mt: 1, mb: 2 }}>작성</Button>
 						</Box>
 					</Box>
 				</Grid>
