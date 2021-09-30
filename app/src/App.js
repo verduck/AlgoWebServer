@@ -1,20 +1,14 @@
-import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Box from '@mui/material/Box';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Link from '@mui/material/Link';
-import IconButton from '@mui/material/IconButton';
+import { styled, alpha } from '@mui/material/styles';
+import { AppBar, Toolbar, Link, IconButton, Breadcrumbs, Box, Button } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+
 import SearchBar from './components/SearchBar';
-import Button from '@mui/material/Button';
 import LoginDialog from './components/LoginDialog';
 import Home from './views/Home';
 import Board from './views/Board';
 import Write from './views/Write';
-import { Typography } from '@mui/material';
-import Breadcrumbs from '@mui/material/Breadcrumbs'
 
 const BluredAppBar = styled(AppBar)(({ theme }) => ({
   backdropFilter: 'blur(10px)',
@@ -25,18 +19,21 @@ const BluredAppBar = styled(AppBar)(({ theme }) => ({
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.state ={
       open: false
     };
+
+    this.handleClickOpen = this.handleClickOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
-  handleClickOpen = () => {
-    this.setState({open: true});
-  };
+  handleClickOpen() {
+    this.setState({ open: true });
+  }
 
-  handleClose = () => {
-    this.setState({open: false});
-  };
+  handleClose() {
+    this.setState({ open: false });
+  }
 
   render() {
     return (
@@ -45,13 +42,7 @@ export default class App extends React.Component {
           <BluredAppBar>
             <Toolbar>
               <Link style={{ color: "inherit" }} href="/">
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="primary"
-                  aria-label="menu"
-                  sx={{ mr: 2 }}
-                >
+                <IconButton size="large" edge="start" color="primary" aria-label="home" sx={{ mr: 2 }}>
                   <HomeIcon />
                 </IconButton>
               </Link>
@@ -65,22 +56,16 @@ export default class App extends React.Component {
               </Breadcrumbs>
               <Box sx={{ flexGrow: 1 }} />
               <SearchBar />
-              {true ? (
-                <Button color="primary" onClick={this.handleClickOpen}>로그인</Button>
-                ) : (
-                <Typography component="div">
-                  이름
-                </Typography>
-              )}
+              <Button color="primary" onClick={this.handleClickOpen}>로그인</Button>
             </Toolbar>
           </BluredAppBar>
           <LoginDialog open={this.state.open} onClose={this.handleClose} />
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/board" component={Board} />
-            <Route exact path="/write" component={Write} />
-          </Switch>
         </div>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/board" component={Board} />
+          <Route path="/write" component={Write} />
+        </Switch>
       </Router>
     );
   }

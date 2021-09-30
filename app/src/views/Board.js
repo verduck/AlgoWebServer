@@ -1,9 +1,8 @@
-import React from 'react';
-import Container from '@mui/material/Container';
-import Fab from '@mui/material/Fab';
+import * as React from 'react'
+import { Container, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-class Board extends React.Component {
+export default class Board extends React.Component {
   render() {
     return (
       <Container maxWidth={false}>
@@ -15,5 +14,3 @@ class Board extends React.Component {
     )
   }
 }
-
-export default Board;

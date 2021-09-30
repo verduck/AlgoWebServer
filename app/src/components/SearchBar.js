@@ -47,7 +47,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-class SearchBar extends React.Component {
+export default class SearchBar extends React.Component {
   render() {
     return (
       <Search>
@@ -62,5 +62,3 @@ class SearchBar extends React.Component {
     );
   }
 }
-
-export default SearchBar;

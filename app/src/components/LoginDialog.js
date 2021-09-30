@@ -1,23 +1,26 @@
 import * as React from 'react';
 import axios from 'axios';
-import Dialog from '@mui/material/Dialog';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import DialogContent from '@mui/material/DialogContent';
-import InputAdornment from '@mui/material/InputAdornment';
+import {
+  Dialog,
+  DialogContent,
+  Box,
+  TextField,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  DialogTitle,
+  InputAdornment,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Snackbar,
+  Alert,
+  FormHelperText,
+  FormLabel,
+  IconButton } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Snackbar from '@mui/material/Snackbar';
-import { Alert, FormHelperText, FormLabel } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default class LoginDialog extends React.Component {
   constructor(props) {
