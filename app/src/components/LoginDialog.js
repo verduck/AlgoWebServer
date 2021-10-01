@@ -21,8 +21,11 @@ import {
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CloseIcon from '@mui/icons-material/Close';
+import { connect } from 'react-redux';
+import { authenticationSuccess } from '../reducers/AuthReducer';
+import { alertType, openAlert } from '../reducers/AlertReducer';
 
-export default class LoginDialog extends React.Component {
+class LoginDialog extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -54,6 +57,12 @@ export default class LoginDialog extends React.Component {
 
   handleChange = (event) => {
     this.setState({[event.target.name]: event.target.value})
+    if (event.target.name === 'studentId' && event.target.value !== '') {
+      this.setState({ studentIdError: false, studentIdErrorMessage: '' });
+    }
+    if (event.target.name === 'password' && event.target.value !== '') {
+      this.setState({ passwordError: false, passwordErrorMessage: '' });
+    }
   }
 
   handleClose = () => {
@@ -117,15 +126,13 @@ export default class LoginDialog extends React.Component {
   handleSubmit = (event) => {
     event.preventDefault();
     const data ={
-      login: true,
-      studentId: this.state.studentId,
+      username: this.state.studentId,
       password: this.state.password
     }
-
     if (this.validate()) {
-      axios.post('/api/v1/auth', data)
+      axios.post('/api/v1/auth/authenticate', data)
         .then(res => {
-          axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
+          this.props.authenticationSuccess(res.data.token);
           this.handleClose();
         })
         .catch(err => {
@@ -133,7 +140,11 @@ export default class LoginDialog extends React.Component {
             const data = err.response.data;
             this.setState({login: {error: !data.result, message: data.message}});
             if (data.result) {
-              this.handleOpenSnackbar(data.message);
+              const payload = {
+                type: alertType.warning,
+                message: data.message
+              };
+              this.props.openAlert(payload);
             }
           }
         });
@@ -195,3 +206,11 @@ export default class LoginDialog extends React.Component {
     );
   }
 }
+
+const mapState = (state) => ({
+  auth: state.auth
+});
+
+const mapDispatch = { authenticationSuccess, openAlert };
+
+export default connect(mapState, mapDispatch)(LoginDialog);

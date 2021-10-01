@@ -1,29 +1,21 @@
 package com.algo.algoweb.security;
 
-import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
 
 import com.algo.algoweb.domain.User;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 
 @Component
-public class JwtProvider {
-  
-  private final Key key;
-
-  public JwtProvider(@Value("${jwt.secret}") String secret) {
-    byte[] keyBytes = Decoders.BASE64.decode(secret);
-    this.key = Keys.hmacShaKeyFor(keyBytes);
-  }
+@RequiredArgsConstructor
+public class JwtService {
+  private final JwtKeyProvider jwtKeyProvider;
 
   public String generateToken(User user) {
     Claims claims = Jwts.claims().setSubject(user.getUsername());
@@ -33,12 +25,12 @@ public class JwtProvider {
       .setClaims(claims)
       .setIssuedAt(now)
       .setExpiration(new Date(now.getTime() + 1000 * 60 * 30))
-      .signWith(key, SignatureAlgorithm.HS256)
+      .signWith(jwtKeyProvider.getPrivateKey(), SignatureAlgorithm.RS256)
       .compact();
   }
 
   private Claims getAllClaims(String token) {
-    return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    return Jwts.parserBuilder().setSigningKey(jwtKeyProvider.getPublicKey()).build().parseClaimsJws(token).getBody();
   }
   
   public <T> T getClaim(String token, Function<Claims, T> claimsResolver) {

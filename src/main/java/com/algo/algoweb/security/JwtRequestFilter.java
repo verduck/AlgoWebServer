@@ -25,7 +25,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
   private UserService userService;
 
   @Autowired
-  private JwtProvider jwtProvider;
+  private JwtService jwtService;
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -38,7 +38,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
       token = authorizationHeader.substring(7);
       try {
-        username = jwtProvider.getUsername(token);
+        username = jwtService.getUsername(token);
       } catch (IllegalArgumentException e) {
 				System.out.println("Unable to get JWT Token");
 			} catch (ExpiredJwtException e) {
@@ -49,7 +49,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
       User user = userService.loadUserByUsername(username);
 
-      if (jwtProvider.validateToken(token, user)) {
+      if (jwtService.validateToken(token, user)) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 						user, null, user.getAuthorities());
 				usernamePasswordAuthenticationToken

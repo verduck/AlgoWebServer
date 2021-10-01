@@ -37,11 +37,11 @@ public class User implements UserDetails {
 
   private String name;
   private Date birth;
+  private String color;
 
   @Enumerated(EnumType.STRING)
   private Authority authority;
   
-
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return null;
