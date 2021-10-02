@@ -1,16 +1,14 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { Redirect, Route } from 'react-router-dom';
-import { selectAuth } from '../reducers/AuthReducer';
+import { connect } from 'react-redux';
+import { Redirect, Route, withRouter } from 'react-router-dom';
 
-function PrivateRoute ({ component: Component, ...rest }) {
-  const auth = useSelector(selectAuth);
-
+function PrivateRoute ({ component: Component, auth, ...rest }) {
+  console.log(auth)
   return (
     <Route
       {...rest}
       render = {props => 
-        auth.isLoggendin ? (
+        auth.isLoggedin ? (
           <Component {...props} />
         ) : ( 
           <Redirect to={{
@@ -23,4 +21,8 @@ function PrivateRoute ({ component: Component, ...rest }) {
   )
 }
 
-export default PrivateRoute;
+const mapState = (state) => ({
+  auth: state.auth
+});
+
+export default withRouter(connect(mapState)(PrivateRoute));

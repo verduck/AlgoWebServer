@@ -2,8 +2,6 @@ package com.algo.algoweb.service;
 
 import java.nio.charset.Charset;
 
-import javax.print.attribute.standard.Media;
-
 import com.algo.algoweb.dto.AuthRequest;
 import com.algo.algoweb.dto.Dataset.Col;
 import com.algo.algoweb.dto.Dataset.Column;
@@ -12,7 +10,6 @@ import com.algo.algoweb.dto.Dataset.Parameter;
 import com.algo.algoweb.dto.Dataset.Row;
 import com.algo.algoweb.dto.Dataset.XMain;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
