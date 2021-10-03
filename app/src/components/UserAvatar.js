@@ -1,15 +1,9 @@
-import { Avatar } from '@mui/material';
 import React from 'react';
+import { Avatar } from '@mui/material';
 
-export default class UserNameAvatar extends React.Component {
-	constructor(props) {
-		super(props)
+export default class UserAvatar extends React.Component {
 
-		this.stringToColor = this.stringToColor.bind(this);
-		this.stringAvatar = this.stringAvatar.bind(this);
-	}
-
-	stringToColor = (string) => {
+	stringToColor(string) {
     let hash = 0;
 
     for (let i = 0; i < string.length; i++) {
@@ -25,18 +19,18 @@ export default class UserNameAvatar extends React.Component {
 
     return color;
   }
-	
-	stringAvatar = (name) => {
-		return {
+
+	stringAvatar(name) {
+		return ({
 			sx: {
-				bgcolor: this.stringToColor(name)
+				bgcolor: this.stringToColor(name),
 			},
-			children: `${name.substr(1)}`
-		};
+			children: name.substring(1, name.length)
+		});
 	}
 
 	render() {
-		const { user } = this.props;
+		const user = this.props.user;
 		return (
 			<Avatar {...this.stringAvatar(user.name)} />
 		)

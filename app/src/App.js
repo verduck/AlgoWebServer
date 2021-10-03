@@ -1,13 +1,13 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { styled, alpha } from '@mui/material/styles';
-import { AppBar, Toolbar, Link, IconButton, Breadcrumbs, Box, Button, Snackbar, Alert } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Breadcrumbs, Box, Button, Snackbar, Alert } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 
 import PrivateRoute from './components/PrivateRoute';
 import SearchBar from './components/SearchBar';
 import LoginDialog from './components/LoginDialog';
-import UserNameAvatar from './components/UserNameAvatar';
+import UserAvatar from './components/UserAvatar';
 
 import Home from './views/Home';
 import Landing from './views/Landing';
@@ -22,6 +22,20 @@ const BluredAppBar = styled(AppBar)(({ theme }) => ({
   backdropFilter: 'blur(10px)',
   boxShadow: 'inset 0px -1px 1px #eaeef3',
   backgroundColor: alpha("#ffffff", 0.72)
+}));
+
+const NavLink = styled(Link)(({ theme }) => ({
+  textDecoration: 'inherit',
+  
+  '&:visited': {
+    color: theme.palette.primary.main,
+    textDecoration: 'inherit'
+  },
+
+  '&:hover': {
+    color: theme.palette.primary.dark,
+    textDecoration: 'inherit'
+  }
 }));
 
 class App extends React.Component {
@@ -55,35 +69,32 @@ class App extends React.Component {
     this.props.closeAlert();
   }
 
-  
-
   render() {
     const { auth, user } = this.props;
-
     return (
       <Router>
         <div className="App">
           <BluredAppBar>
             <Toolbar>
-              <Link style={{ color: "inherit" }} href="/">
+              <Link style={{ color: "inherit" }} to="/">
                 <IconButton size="large" edge="start" color="primary" aria-label="home" sx={{ mr: 2 }}>
                   <HomeIcon />
                 </IconButton>
               </Link>
               <Breadcrumbs aria-label="breadcrumb">
-                <Link underline="none" href="#" sx={{ my: 1, mx: 1.5 }}>
-                  공지사항
-                </Link>
-                <Link underline="none" href="/board" sx={{ my: 1, mx: 1.5 }}>
+                <NavLink to="#" sx={{ my: 1, mx: 1.5 }}>
+                    공지사항
+                </NavLink>
+                <NavLink to="/board" sx={{ my: 1, mx: 1.5 }}>
                   게시판
-                </Link>
+                </NavLink>
               </Breadcrumbs>
               <Box sx={{ flexGrow: 1 }} />
               <SearchBar />
-              {!auth.isLoggedin ? (
+              {auth.isLoggedin ? (
                 <div>
-                  <IconButton size="large" aria-label="user" aria-controls="menu-appbar" aria-haspopup="true" color="inherit">
-                    <UserNameAvatar user={user} />
+                  <IconButton aria-label="user" aria-controls="menu-appbar" aria-haspopup="true" color="inherit">
+                    <UserAvatar user={user} />
                   </IconButton>
                 </div>
               ) : (

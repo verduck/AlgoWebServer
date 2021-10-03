@@ -25,8 +25,6 @@ export const alertSlice = createSlice({
 
     closeAlert: (state) => {
       state.open = false;
-      state.type = alertType.success;
-      state.message = '';
     }
   }
 });

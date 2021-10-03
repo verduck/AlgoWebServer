@@ -1,17 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    studentId: '123',
-    name: '홍길동',
-    color: '',
+	studentId: '',
+	name: ''
 };
 
 export const userSlice = createSlice({
-    name: 'user',
-    initialState,
-    reducers: {
-
-    }
+	name: 'user',
+	initialState,
+	reducers: {
+		setName: (state, action) => {
+			state.name = action.payload;
+		}
+	}
 });
 
 export default userSlice.reducer;
