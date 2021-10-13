@@ -29,8 +29,9 @@ export default class Write extends React.Component {
 	render() {
 		return(
 			<Container maxWidth={false}>
-				<Grid container alignContent="center" style={{ minHeight: "100vh", maxHeight: "100vh" }}>
-					<Box textAlign="center" mx="auto"  width="1024px" maxWidth="1024px">
+				<Grid container alignContent="center" height="100vh">
+				<Box sx={{ height: '64px' }} />
+					<Box textAlign="center" mx="auto"  width="1920px" maxWidth="1920px">
 						<Typography align="left" gutterBottom  variant="h4">게시물 작성</Typography>
 						<Divider />
 						<Box component="form">

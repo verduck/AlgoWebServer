@@ -11,6 +11,7 @@ import UserAvatar from './components/UserAvatar';
 
 import Home from './views/Home';
 import Landing from './views/Landing';
+import Application from './views/Application';
 import Board from './views/Board';
 import Write from './views/Write';
 
@@ -52,9 +53,9 @@ class App extends React.Component {
 
   componentDidMount() {
     const token = sessionStorage.getItem('token');
-    if (token !== null) {
+    //if (token !== null) {
       this.props.authenticationSuccess(token);
-    }
+    //}
   }
 
   handleClickOpen() {
@@ -112,6 +113,7 @@ class App extends React.Component {
         </div>
         <Switch>
           <Route exact path="/" component={auth.isLoggedin ? Home : Landing} />
+          <Route exact path="/application" component={Application} />
           <PrivateRoute exact path="/board" component={Board} />
           <PrivateRoute path="/write" component={Write} />
         </Switch>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Container, Grid, Box } from '@mui/material';
 
-class Home extends React.Component {
+class Landing extends React.Component {
   render() {
     return (
       <Container maxWidth={false}>
@@ -15,4 +15,4 @@ class Home extends React.Component {
   }
 }
 
-export default Home;
+export default Landing;
