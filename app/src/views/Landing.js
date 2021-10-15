@@ -1,5 +1,6 @@
-import React from 'react'
-import { Container, Grid, Box } from '@mui/material';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Container, Grid, Box, Button } from '@mui/material';
 
 class Landing extends React.Component {
   render() {
@@ -9,7 +10,13 @@ class Landing extends React.Component {
           <Box textAlign="center" mx="auto">
             흥보 페이지
           </Box>
+          <Box textAlign="center" mx="auto">
+            <Link to="/application">
+              <Button>지원하기</Button>
+            </Link>
+          </Box>
         </Grid>
+        
       </Container>
     )
   }

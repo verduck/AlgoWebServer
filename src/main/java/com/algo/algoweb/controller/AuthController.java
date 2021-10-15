@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,7 +50,6 @@ public class AuthController {
       response.put("message", "학번 또는 비밀번호가 잘못되었습니다.");
       return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
-    response.put("result", true);
 		try {
       authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getUsername())
@@ -61,11 +59,13 @@ public class AuthController {
       for (Col c : row.getCols()) {
         response.put(c.getId().toLowerCase(), c.getValue());
       }
+      response.put("result", false);
       response.put("message", "등록되지 않은 사용자입니다.\n알고리즘 랩장에게 문의하세요.");
-      return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(response, HttpStatus.OK);
     }
     final User user = userService.loadUserByUsername(authRequest.getUsername());
     String token = jwtService.generateToken(user);
+    response.put("result", true);
     response.put("token", token);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }

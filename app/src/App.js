@@ -53,9 +53,9 @@ class App extends React.Component {
 
   componentDidMount() {
     const token = sessionStorage.getItem('token');
-    //if (token !== null) {
+    if (token !== null) {
       this.props.authenticationSuccess(token);
-    //}
+    }
   }
 
   handleClickOpen() {

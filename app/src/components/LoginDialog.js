@@ -1,5 +1,4 @@
 import * as React from 'react';
-import axios from 'axios';
 import {
   Dialog,
   DialogContent,
@@ -13,8 +12,6 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
-  Snackbar,
-  Alert,
   FormHelperText,
   FormLabel,
   IconButton } from '@mui/material';
@@ -22,7 +19,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CloseIcon from '@mui/icons-material/Close';
 import { connect } from 'react-redux';
-import { authenticationSuccess } from '../reducers/AuthReducer';
+import { authenticate, resetError } from '../reducers/AuthReducer';
 import { alertType, openAlert } from '../reducers/AlertReducer';
 
 class LoginDialog extends React.Component {
@@ -36,10 +33,6 @@ class LoginDialog extends React.Component {
       studentIdErrorMessage: '',
       passwordError: false,
       passwordErrorMessage: '',
-      snackbar: {
-        open: false,
-        message: '',
-      },
       login: {
         error: false,
         message: '',
@@ -83,6 +76,8 @@ class LoginDialog extends React.Component {
         message: '',
       }
     });
+
+    this.props.resetError();
     this.props.onClose();
   }
 
@@ -123,30 +118,27 @@ class LoginDialog extends React.Component {
     return !valid.studentIdError && !valid.passwordError;
   }
 
-  handleSubmit = (event) => {
-    event.preventDefault();
+  handleSubmit = (e) => {
+    e.preventDefault();
     const data ={
       username: this.state.studentId,
       password: this.state.password
     }
     if (this.validate()) {
-      axios.post('/api/v1/auth/authenticate', data)
-        .then(res => {
-          this.props.authenticationSuccess(res.data.token);
-          this.handleClose();
-        })
-        .catch(err => {
-          if (err.response) {
-            const data = err.response.data;
-            this.setState({login: {error: !data.result, message: data.message}});
-            if (data.result) {
-              const payload = {
-                type: alertType.warning,
-                message: data.message
-              };
-              this.props.openAlert(payload);
+      this.props.authenticate(data).unwrap()
+        .then((originalPromiseResult) => {
+          if (!originalPromiseResult.result) {
+            const payload = {
+              type: alertType.warning,
+              message: originalPromiseResult.message
             }
+            this.props.openAlert(payload);
+          } else {
+            this.handleClose();
           }
+        })
+        .catch((e) => {
+
         });
     }
   }
@@ -186,22 +178,20 @@ class LoginDialog extends React.Component {
                   {this.state.passwordErrorMessage}
                 </FormHelperText>
             </FormControl>
-            {this.state.login.error ? (
+            {this.props.auth.error ? (
               <FormControl margin="dense" error fullWidth>
                 <FormLabel error>
-                  {this.state.login.message}
+                  {this.props.auth.message}
                 </FormLabel>
               </FormControl>
-            ) : null}
+            ) : (
+              <FormControl margin="dense" error fullWidth>
+              </FormControl>
+            )}
             <FormControlLabel control={<Checkbox />} label="자동 로그인" />
             <Button fullWidth variant="contained" size="large" type="submit" sx={{ mt: 1, mb: 2 }}>로그인</Button>
           </Box>
         </DialogContent>
-        <Snackbar open={this.state.snackbar.open} onClose={this.handleCloseSnackbar} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-          <Alert onClose={this.handleCloseSnackbar} severity="warning" sx={{ width: `100%` }}>
-            {this.state.snackbar.message}
-          </Alert>
-        </Snackbar>
       </Dialog>
     );
   }
@@ -211,6 +201,6 @@ const mapState = (state) => ({
   auth: state.auth
 });
 
-const mapDispatch = { authenticationSuccess, openAlert };
+const mapDispatch = { authenticate, resetError, openAlert };
 
 export default connect(mapState, mapDispatch)(LoginDialog);
