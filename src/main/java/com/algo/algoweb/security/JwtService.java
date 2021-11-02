@@ -18,13 +18,25 @@ public class JwtService {
   private final JwtKeyProvider jwtKeyProvider;
 
   public String generateToken(User user) {
-    Claims claims = Jwts.claims().setSubject(user.getUsername());
+    Claims claims = Jwts.claims().setSubject(user.getId().toString());
     Date now = new Date();
 
     return Jwts.builder()
       .setClaims(claims)
       .setIssuedAt(now)
       .setExpiration(new Date(now.getTime() + 1000 * 60 * 30))
+      .signWith(jwtKeyProvider.getPrivateKey(), SignatureAlgorithm.RS256)
+      .compact();
+  }
+
+  public String generateRefreshToken(User user) {
+    Claims claims = Jwts.claims().setSubject(user.getId().toString());
+    Date now = new Date();
+
+    return Jwts.builder()
+      .setClaims(claims)
+      .setIssuedAt(now)
+      .setExpiration(new Date(now.getTime() + 1000 * 60 * 60 * 24 * 7))
       .signWith(jwtKeyProvider.getPrivateKey(), SignatureAlgorithm.RS256)
       .compact();
   }
@@ -38,11 +50,11 @@ public class JwtService {
     return claimsResolver.apply(claims);
   }
 
-  public String getUsername(String token) {
-    return getClaim(token, Claims::getSubject);
+  public Integer getUserId(String token) {
+    return Integer.parseInt(getClaim(token, Claims::getSubject));
   }
 
-  private Date getExpiration(String token) {
+  public Date getExpiration(String token) {
     return getClaim(token, Claims::getExpiration);
   }
 
@@ -52,7 +64,7 @@ public class JwtService {
   }
 
   public boolean validateToken(String token, User user) {
-    final String username = getUsername(token);
-    return (username.equals(user.getUsername()) && !isExpired(token));
+    final Integer userId = getUserId(token);
+    return (userId == user.getId() && !isExpired(token));
   }
 }

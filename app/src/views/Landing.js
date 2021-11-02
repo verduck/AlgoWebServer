@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Grid, Box, Button } from '@mui/material';
+import { Container, Grid, Box, Button, Toolbar } from '@mui/material';
 
 class Landing extends React.Component {
   render() {
     return (
       <Container maxWidth={false}>
-        <Grid container alignContent="center" style={{ minHeight: "100vh", maxHeight: "100vh" }}>
+        <Toolbar />
+        <Grid container alignContent="center" style={{ minHeight: "95vh", maxHeight: "95vh" }}>
           <Box textAlign="center" mx="auto">
             흥보 페이지
           </Box>

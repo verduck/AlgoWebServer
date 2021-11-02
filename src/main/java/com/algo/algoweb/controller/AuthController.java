@@ -2,8 +2,10 @@ package com.algo.algoweb.controller;
 
 import java.util.HashMap;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 import com.algo.algoweb.domain.User;
-import com.algo.algoweb.dto.AuthRequest;
 import com.algo.algoweb.dto.Dataset.Col;
 import com.algo.algoweb.dto.Dataset.Dataset;
 import com.algo.algoweb.dto.Dataset.Row;
@@ -40,10 +42,12 @@ public class AuthController {
   private JwtService jwtService;
 
   @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-  public @ResponseBody ResponseEntity<HashMap<String, Object>> authenticate(@RequestBody AuthRequest authRequest) {
+  public @ResponseBody ResponseEntity<HashMap<String, Object>> authenticate(HttpServletResponse httpServletResponse, @RequestBody HashMap<String, Object> request) {
     HashMap<String, Object> response = new HashMap<>();
+    String username = (String) request.get("username");
+    String password = (String) request.get("password");
 
-    XMain result = authService.loginJJInstar(authRequest);
+    XMain result = authService.loginJJInstar(username, password);
     Dataset dataset = result.findDatasetById("ds_info");
     if (dataset == null) {
       response.put("result", false);
@@ -52,7 +56,7 @@ public class AuthController {
     }
 		try {
       authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getUsername())
+        new UsernamePasswordAuthenticationToken(username, username)
       );
     } catch (BadCredentialsException e) {
       Row row = dataset.getRows().get(0);
@@ -63,10 +67,18 @@ public class AuthController {
       response.put("message", "등록되지 않은 사용자입니다.\n알고리즘 랩장에게 문의하세요.");
       return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    final User user = userService.loadUserByUsername(authRequest.getUsername());
+    final User user = userService.loadUserByUsername(username);
     String token = jwtService.generateToken(user);
+    String refreshToken = jwtService.generateRefreshToken(user);
     response.put("result", true);
+    response.put("username", user.getUsername());
+    response.put("name", user.getName());
     response.put("token", token);
+    Cookie cookie = new Cookie("token", refreshToken);
+    cookie.setMaxAge(60 * 60 * 24 * 7);
+    cookie.setSecure(true);
+    cookie.setHttpOnly(true);
+    httpServletResponse.addCookie(cookie);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }

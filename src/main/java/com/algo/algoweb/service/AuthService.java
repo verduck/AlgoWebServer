@@ -2,7 +2,6 @@ package com.algo.algoweb.service;
 
 import java.nio.charset.Charset;
 
-import com.algo.algoweb.dto.AuthRequest;
 import com.algo.algoweb.dto.Dataset.Col;
 import com.algo.algoweb.dto.Dataset.Column;
 import com.algo.algoweb.dto.Dataset.Dataset;
@@ -22,7 +21,7 @@ import org.springframework.web.client.RestTemplate;
 public class AuthService {
   private final String url = "https://instar.jj.ac.kr/XMain";
 
-  public XMain loginJJInstar(AuthRequest authRequest) {
+  public XMain loginJJInstar(String username, String password) {
     XMain result;
 
     XMain requestBody = new XMain();
@@ -42,8 +41,8 @@ public class AuthService {
     dataset.getColumns().add(new Column("ROLE_GUBUN2", "STRING", "256"));
     Row row = new Row();
     row.getCols().add(new Col("SYSTEM_CODE", "INSTAR_WEB"));
-    row.getCols().add(new Col("MEM_ID", authRequest.getUsername()));
-    row.getCols().add(new Col("MEM_PW", authRequest.getPassword()));
+    row.getCols().add(new Col("MEM_ID", username));
+    row.getCols().add(new Col("MEM_PW", password));
     dataset.getRows().add(row);
     requestBody.getDatasets().add(dataset);
 

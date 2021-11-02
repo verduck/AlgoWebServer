@@ -14,7 +14,8 @@ import {
   IconButton,
   FormHelperText,
   FormLabel,
-  Button
+  Button,
+  Toolbar
 } from '@mui/material';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
@@ -69,8 +70,8 @@ class Application extends React.Component {
   render() {
     return (
       <Container maxWidth={false} style={{ height: "100vh" }}>
-        <Box sx={{ height: '64px' }} />
-				<Grid container alignContent="center" height="91%">
+        <Toolbar />
+				<Grid container alignContent="center" height="95vh">
 					<Box mx="auto" width="1920px" maxWidth="1920px">
             <Typography align="left" gutterBottom  variant="h4">지원서 작성</Typography>
             <Divider />

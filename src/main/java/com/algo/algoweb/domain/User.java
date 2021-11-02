@@ -2,13 +2,9 @@ package com.algo.algoweb.domain;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,17 +18,14 @@ import lombok.RequiredArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Entity
 public class User implements UserDetails {
   @Id
-  @GeneratedValue(strategy=GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @NonNull
   private String username;
-  
-  @NonNull
+
   private String password;
 
   private String name;
@@ -40,6 +33,23 @@ public class User implements UserDetails {
 
   @Enumerated(EnumType.STRING)
   private Authority authority;
+
+  @OneToOne(mappedBy = "user")
+  private Application application;
+
+  @OneToMany(mappedBy = "user")
+  private List<Post> posts;
+
+  @OneToMany(mappedBy = "user")
+  private List<Like> likes;
+
+  public User(String username, String password, String name, Date birth, Authority authority) {
+    this.username = username;
+    this.password = password;
+    this.name = name;
+    this.birth = birth;
+    this.authority = authority;
+  }
   
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

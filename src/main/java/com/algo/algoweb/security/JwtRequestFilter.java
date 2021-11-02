@@ -1,15 +1,8 @@
 package com.algo.algoweb.security;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.algo.algoweb.domain.User;
 import com.algo.algoweb.service.UserService;
-
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +10,11 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import io.jsonwebtoken.ExpiredJwtException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -32,13 +29,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
     
     final String authorizationHeader = request.getHeader("Authorization");
-    String username = null;
+    Integer userId = -1;
     String token = null;
 
     if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
       token = authorizationHeader.substring(7);
       try {
-        username = jwtService.getUsername(token);
+        userId = jwtService.getUserId(token);
       } catch (IllegalArgumentException e) {
 				System.out.println("Unable to get JWT Token");
 			} catch (ExpiredJwtException e) {
@@ -46,8 +43,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			}
     }
 
-    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-      User user = userService.loadUserByUsername(username);
+    if (userId != -1 && SecurityContextHolder.getContext().getAuthentication() == null) {
+      User user = userService.loadUserById(userId);
 
       if (jwtService.validateToken(token, user)) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(

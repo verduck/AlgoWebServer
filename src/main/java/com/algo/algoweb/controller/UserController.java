@@ -1,13 +1,10 @@
 package com.algo.algoweb.controller;
 
+import com.algo.algoweb.domain.User;
+import com.algo.algoweb.dto.UserDTO;
 import com.algo.algoweb.service.UserService;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
@@ -17,7 +14,10 @@ public class UserController {
   private UserService userService;
   
   @RequestMapping(value = "/me", method = RequestMethod.GET)
-  public @ResponseBody String getMe() {
-    return "Me";
+  public @ResponseBody UserDTO getMe() {
+    UserDTO response;
+    User user = userService.loadUserById(1);
+    response = userService.convertUserToUserDTO(user);
+    return response;
   }
 }
