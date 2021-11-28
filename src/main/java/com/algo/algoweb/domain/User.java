@@ -4,7 +4,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,8 +19,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -41,7 +46,7 @@ public class User implements UserDetails {
   private List<Post> posts;
 
   @OneToMany(mappedBy = "user")
-  private List<Like> likes;
+  private List<Likes> likes;
 
   public User(String username, String password, String name, Date birth, Authority authority) {
     this.username = username;
