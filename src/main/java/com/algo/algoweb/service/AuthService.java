@@ -1,25 +1,70 @@
 package com.algo.algoweb.service;
 
 import java.nio.charset.Charset;
+import java.util.HashMap;
 
+import com.algo.algoweb.domain.User;
+import com.algo.algoweb.dto.AuthDTO;
+import com.algo.algoweb.dto.UserDTO;
 import com.algo.algoweb.dto.Dataset.Col;
 import com.algo.algoweb.dto.Dataset.Column;
 import com.algo.algoweb.dto.Dataset.Dataset;
 import com.algo.algoweb.dto.Dataset.Parameter;
 import com.algo.algoweb.dto.Dataset.Row;
 import com.algo.algoweb.dto.Dataset.XMain;
+import com.algo.algoweb.security.JwtService;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 public class AuthService {
   private final String url = "https://instar.jj.ac.kr/XMain";
+
+  @Autowired
+  private AuthenticationManager authenticationManager;
+  @Autowired
+  private UserService userService;
+  @Autowired
+  private JwtService jwtService;
+
+  public UserDTO authenticate(AuthDTO authDTO) {
+    XMain xMain = loginJJInstar(authDTO.getUsername(), authDTO.getPassword());
+    Dataset dataset = xMain.findDatasetById("ds_info");
+    HashMap<String, String> datasetMap = new HashMap<>();
+    if (dataset == null) {
+      return null;
+    }
+
+    Row row = dataset.getRows().get(0);
+      for (Col c : row.getCols()) {
+        datasetMap.put(c.getId(), c.getValue());
+      }
+
+    User user;
+    try {
+      authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(authDTO.getUsername(), authDTO.getUsername())
+      );
+      user = userService.loadUserByUsername(authDTO.getUsername());
+    } catch (BadCredentialsException e) {
+      user = userService.createUser(new User(authDTO.getUsername(), authDTO.getPassword(), datasetMap.get("MEM_NM")));
+    }
+
+    user.setToken(jwtService.generateToken(user));
+    UserDTO userDTO = userService.convertUserToUserDTO(user);
+    return userDTO;
+  }
 
   public XMain loginJJInstar(String username, String password) {
     XMain result;

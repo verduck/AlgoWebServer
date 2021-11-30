@@ -1,7 +1,7 @@
 package com.algo.algoweb.domain;
 
+import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -28,27 +28,26 @@ public class User implements UserDetails {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
-
   private String username;
-
   private String password;
-
   private String name;
-  private Date birth;
+  private LocalDate birth;
+  private String token;
 
   @Enumerated(EnumType.STRING)
   private Authority authority;
-
   @OneToOne(mappedBy = "user")
   private Application application;
-
   @OneToMany(mappedBy = "user")
   private List<Post> posts;
-
   @OneToMany(mappedBy = "user")
   private List<Likes> likes;
 
-  public User(String username, String password, String name, Date birth, Authority authority) {
+  public User(String username, String password, String name) {
+    this(username, password, name, null, Authority.ROLE_APPLICANT);
+  }
+
+  public User(String username, String password, String name, LocalDate birth, Authority authority) {
     this.username = username;
     this.password = password;
     this.name = name;
@@ -62,13 +61,13 @@ public class User implements UserDetails {
   }
 
   @Override
-  public String getPassword() {
-    return password;
+  public String getUsername() {
+    return username;
   }
 
   @Override
-  public String getUsername() {
-    return username;
+  public String getPassword() {
+    return password;
   }
 
   @Override

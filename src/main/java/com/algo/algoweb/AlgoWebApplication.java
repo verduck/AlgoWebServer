@@ -1,8 +1,9 @@
 package com.algo.algoweb;
 
+import java.text.ParseException;
+
 import javax.annotation.PostConstruct;
 
-import com.algo.algoweb.domain.Authority;
 import com.algo.algoweb.domain.User;
 import com.algo.algoweb.repository.UserRepository;
 
@@ -10,9 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 @SpringBootApplication
 public class AlgoWebApplication {
@@ -25,7 +23,7 @@ public class AlgoWebApplication {
 
 	@PostConstruct
 	public void initUsers() throws ParseException {
-		User user = new User("201668003", passwordEncoder.encode("201668003"), "최재영", new SimpleDateFormat("yyyy-MM-dd").parse("1997-04-11"), Authority.ROLE_ADMIN);
+		User user = new User("201668003", passwordEncoder.encode("201668003"), "최재영");
 		repository.save(user);
 	}
 	public static void main(String[] args) {

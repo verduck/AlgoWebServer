@@ -127,19 +127,19 @@ class LoginDialog extends React.Component {
     if (this.validate()) {
       this.props.authenticate(data).unwrap()
         .then((originalPromiseResult) => {
-          if (!originalPromiseResult.result) {
+          if (originalPromiseResult.authority === 'ROLE_APPLICANT') {
             const payload = {
               type: alertType.warning,
-              message: originalPromiseResult.message
+              message: "등록되지 않은 사용자입니다.\n알고리즘 랩장에게 문의하세요."
             }
             this.props.openAlert(payload);
-          } else {
-            this.handleClose();
           }
+          this.handleClose();
         })
         .catch((e) => {
 
         });
+        
     }
   }
 

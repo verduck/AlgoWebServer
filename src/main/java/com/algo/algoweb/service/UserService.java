@@ -39,10 +39,12 @@ public class UserService implements UserDetailsService {
     }
   }
 
+  public User createUser(User user) {
+    return userRepository.save(user);
+  }
+
   public UserDTO convertUserToUserDTO(User user) {
-    UserDTO userDTO;
-    userDTO = modelMapper.map(user, UserDTO.class);
-    return userDTO;
+    return modelMapper.map(user, UserDTO.class);
   }
   
 }

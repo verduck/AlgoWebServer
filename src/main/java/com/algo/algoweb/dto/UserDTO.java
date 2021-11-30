@@ -17,4 +17,5 @@ public class UserDTO {
   private String name;
   private Date birth;
   private Authority authority;
+  private String token;
 }
