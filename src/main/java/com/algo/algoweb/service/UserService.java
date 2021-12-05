@@ -29,11 +29,11 @@ public class UserService implements UserDetailsService {
     }
   }
 
-  public User loadUserById(Integer id) throws UsernameNotFoundException {
+  public UserDTO loadUserById(Integer id) throws UsernameNotFoundException {
     Optional<User> optionalUser = userRepository.findById(id);
 
     if (optionalUser.isPresent()) {
-      return optionalUser.get();
+      return modelMapper.map(optionalUser.get(), UserDTO.class);
     } else {
       throw new UsernameNotFoundException("User not found with id: " + id);
     }

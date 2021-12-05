@@ -8,16 +8,13 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
-@RequestMapping(path = "/api/v1/user")
+@RequestMapping("/api/v1/user")
 public class UserController {
   @Autowired
   private UserService userService;
   
   @RequestMapping(value = "/me", method = RequestMethod.GET)
   public @ResponseBody UserDTO getMe() {
-    UserDTO response;
-    User user = userService.loadUserById(1);
-    response = userService.convertUserToUserDTO(user);
-    return response;
+    return userService.loadUserById(1);
   }
 }

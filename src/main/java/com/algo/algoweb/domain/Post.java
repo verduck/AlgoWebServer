@@ -1,5 +1,6 @@
 package com.algo.algoweb.domain;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -32,8 +33,8 @@ public class Post {
   @JoinColumn(name = "author")
   private User user;
 
-  private Date createdAt;
-  private Date updatedAt;
+  private LocalDate createdAt;
+  private LocalDate updatedAt;
 
   @OneToMany(mappedBy = "post")
   private List<Likes> likes;

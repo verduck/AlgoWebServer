@@ -1,19 +1,12 @@
 package com.algo.algoweb.service;
 
-import java.nio.charset.Charset;
-import java.util.HashMap;
-
 import com.algo.algoweb.domain.User;
-import com.algo.algoweb.dto.AuthDTO;
+import com.algo.algoweb.dto.AuthRequestDTO;
+import com.algo.algoweb.dto.AuthResponseDTO;
+import com.algo.algoweb.dto.Dataset.*;
+import com.algo.algoweb.dto.TokenDTO;
 import com.algo.algoweb.dto.UserDTO;
-import com.algo.algoweb.dto.Dataset.Col;
-import com.algo.algoweb.dto.Dataset.Column;
-import com.algo.algoweb.dto.Dataset.Dataset;
-import com.algo.algoweb.dto.Dataset.Parameter;
-import com.algo.algoweb.dto.Dataset.Row;
-import com.algo.algoweb.dto.Dataset.XMain;
 import com.algo.algoweb.security.JwtService;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -27,6 +20,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+
 @Service
 public class AuthService {
   private final String url = "https://instar.jj.ac.kr/XMain";
@@ -37,13 +36,18 @@ public class AuthService {
   private UserService userService;
   @Autowired
   private JwtService jwtService;
+  @Autowired
+  private ModelMapper modelMapper;
 
-  public UserDTO authenticate(AuthDTO authDTO) {
-    XMain xMain = loginJJInstar(authDTO.getUsername(), authDTO.getPassword());
+  public AuthResponseDTO authenticate(AuthRequestDTO authRequest) {
+    AuthResponseDTO authResponse = new AuthResponseDTO();
+    XMain xMain = loginJJInstar(authRequest.getUsername(), authRequest.getPassword());
     Dataset dataset = xMain.findDatasetById("ds_info");
     HashMap<String, String> datasetMap = new HashMap<>();
     if (dataset == null) {
-      return null;
+      authResponse.setResult(false);
+      authResponse.setMessage("학번 또는 비밀번호가 일치하지 않습니다.");
+      return authResponse;
     }
 
     Row row = dataset.getRows().get(0);
@@ -54,16 +58,43 @@ public class AuthService {
     User user;
     try {
       authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(authDTO.getUsername(), authDTO.getUsername())
+        new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getUsername())
       );
-      user = userService.loadUserByUsername(authDTO.getUsername());
+      user = userService.loadUserByUsername(authRequest.getUsername());
     } catch (BadCredentialsException e) {
-      user = userService.createUser(new User(authDTO.getUsername(), authDTO.getPassword(), datasetMap.get("MEM_NM")));
+      user = userService.createUser(new User(authRequest.getUsername(), authRequest.getPassword(), datasetMap.get("MEM_NM")));
     }
 
-    user.setToken(jwtService.generateToken(user));
     UserDTO userDTO = userService.convertUserToUserDTO(user);
-    return userDTO;
+    authResponse.setResult(true);
+    authResponse.setMessage("로그인에 성공하였습니다.");
+    authResponse.setUser(userDTO);
+    authResponse.setToken(jwtService.generateToken(user));
+    return authResponse;
+  }
+
+  public TokenDTO reissue(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    Cookie[] cookies = httpServletRequest.getCookies();
+    String refresh = null;
+    if (cookies != null) {
+      for (Cookie c : cookies) {
+        if (c.getName().equals("refresh")) {
+          refresh = c.getValue();
+          break;
+        }
+      }
+    }
+    if (refresh != null && jwtService.isExpired(refresh)) {
+      UserDTO userDTO = userService.loadUserById(jwtService.getUserId(refresh));
+      User user = modelMapper.map(userDTO, User.class);
+      TokenDTO tokenDTO = new TokenDTO();
+      tokenDTO.setToken(jwtService.generateToken(user));
+      tokenDTO.setRefresh(jwtService.generateRefreshToken(user));
+      return tokenDTO;
+    } else {
+      return null;
+    }
+
   }
 
   public XMain loginJJInstar(String username, String password) {
