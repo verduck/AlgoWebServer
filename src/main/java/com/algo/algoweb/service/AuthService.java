@@ -85,7 +85,7 @@ public class AuthService {
       }
     }
     if (refresh != null && jwtService.isExpired(refresh)) {
-      UserDTO userDTO = userService.loadUserById(jwtService.getUserId(refresh));
+      UserDTO userDTO = userService.loadUserByToken(refresh);
       User user = modelMapper.map(userDTO, User.class);
       TokenDTO tokenDTO = new TokenDTO();
       tokenDTO.setToken(jwtService.generateToken(user));

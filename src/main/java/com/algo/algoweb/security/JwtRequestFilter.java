@@ -1,6 +1,7 @@
 package com.algo.algoweb.security;
 
 import com.algo.algoweb.domain.User;
+import com.algo.algoweb.dto.UserDTO;
 import com.algo.algoweb.service.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;

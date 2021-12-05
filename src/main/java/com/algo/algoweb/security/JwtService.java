@@ -5,6 +5,7 @@ import java.util.function.Function;
 
 import com.algo.algoweb.domain.User;
 
+import com.algo.algoweb.dto.UserDTO;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;

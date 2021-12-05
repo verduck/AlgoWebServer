@@ -40,10 +40,10 @@ public class AuthController {
   @RequestMapping(value = "/reissue", method = RequestMethod.GET)
   public @ResponseBody ResponseEntity<TokenDTO> reissue(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
     TokenDTO response = authService.reissue(httpServletRequest, httpServletResponse);
-    if (response != null) {
-      return new ResponseEntity<>(response, HttpStatus.OK);
+    if (response == null) {
+      return new ResponseEntity<>( HttpStatus.UNAUTHORIZED);
     } else {
-      return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+      return new ResponseEntity<>(response, HttpStatus.OK);
     }
   }
 

@@ -3,6 +3,7 @@ package com.algo.algoweb.service;
 import com.algo.algoweb.domain.User;
 import com.algo.algoweb.dto.UserDTO;
 import com.algo.algoweb.repository.UserRepository;
+import com.algo.algoweb.security.JwtService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +18,9 @@ public class UserService implements UserDetailsService {
   private UserRepository userRepository;
 
   @Autowired
+  private JwtService jwtService;
+
+  @Autowired
   private ModelMapper modelMapper;
 
   @Override
@@ -29,13 +33,22 @@ public class UserService implements UserDetailsService {
     }
   }
 
-  public UserDTO loadUserById(Integer id) throws UsernameNotFoundException {
+  public User loadUserById(Integer id) throws UsernameNotFoundException {
     Optional<User> optionalUser = userRepository.findById(id);
 
     if (optionalUser.isPresent()) {
-      return modelMapper.map(optionalUser.get(), UserDTO.class);
+      return optionalUser.get();
     } else {
       throw new UsernameNotFoundException("User not found with id: " + id);
+    }
+  }
+
+  public UserDTO loadUserByToken(String token) {
+    Optional<User> optionalUser =  userRepository.findById(jwtService.getUserId(token));
+    if (optionalUser.isPresent()) {
+      return modelMapper.map(optionalUser.get(), UserDTO.class);
+    } else {
+      return null;
     }
   }
 
