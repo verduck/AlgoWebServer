@@ -28,10 +28,11 @@ public class AuthController {
   @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
   public @ResponseBody ResponseEntity<AuthResponseDTO> authenticate(@RequestBody AuthRequestDTO request, HttpServletResponse httpServletResponse) {
     AuthResponseDTO response = authService.authenticate(request);
-    if (response.isResult()) {
+    if (!response.isResult()) {
       return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     } else {
       Cookie cookie = new Cookie("token", response.getToken());
+      cookie.setHttpOnly(true);
       httpServletResponse.addCookie(cookie);
       return new ResponseEntity<>(response, HttpStatus.OK);
     }
