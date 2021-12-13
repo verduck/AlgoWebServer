@@ -46,7 +46,7 @@ public class PostService {
         if (post.getUser().getId() != user.getId()) {
             return null;
         }
-
+        postDTO.setUpdatedAt(LocalDate.now());
         post = postRepository.save(modelMapper.map(postDTO, Post.class));
 
         return modelMapper.map(post, PostDTO.class);
