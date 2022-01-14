@@ -1,11 +1,13 @@
 package com.algo.algoweb.security;
 
+import com.algo.algoweb.util.Base64Util;
+import com.algo.algoweb.util.ResourceUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.security.Key;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -13,29 +15,22 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import javax.annotation.PostConstruct;
-
-import com.algo.algoweb.util.Base64Util;
-import com.algo.algoweb.util.ResourceUtil;
-
-import org.springframework.stereotype.Component;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 @Component
-@RequiredArgsConstructor
 public class JwtKeyProvider {
-  private final ResourceUtil resourceUtil;
-  private final Base64Util base64Util;
+    private final ResourceUtil resourceUtil;
+    private final Base64Util base64Util;
 
-  @Getter
-  private PrivateKey privateKey;
+    private PrivateKey privateKey;
 
-  @Getter
-  private PublicKey publicKey;
+    private PublicKey publicKey;
 
-  @PostConstruct
+    @Autowired
+    public JwtKeyProvider(final ResourceUtil resourceUtil, final Base64Util base64Util) {
+        this.resourceUtil = resourceUtil;
+        this.base64Util = base64Util;
+    }
+
+    @PostConstruct
     public void init() {
         privateKey = readKey(
           "classpath:keys/rsa-key.pkcs8.private",
@@ -89,5 +84,21 @@ public class JwtKeyProvider {
         } catch(InvalidKeySpecException e) {
             throw new RuntimeException("Something went wrong while reading private key!", e);
         }
+    }
+
+    public PrivateKey getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(PrivateKey privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    public PublicKey getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(PublicKey publicKey) {
+        this.publicKey = publicKey;
     }
 }

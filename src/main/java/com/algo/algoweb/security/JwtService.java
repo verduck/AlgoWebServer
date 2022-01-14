@@ -1,31 +1,34 @@
 package com.algo.algoweb.security;
 
-import java.util.Date;
-import java.util.function.Function;
-
 import com.algo.algoweb.domain.User;
-
-import com.algo.algoweb.dto.UserDTO;
-import org.springframework.stereotype.Component;
-
+import com.algo.algoweb.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.function.Function;
 
 @Component
-@RequiredArgsConstructor
 public class JwtService {
+  private final JwtProperties jwtProperties;
   private final JwtKeyProvider jwtKeyProvider;
+
+  @Autowired
+  public JwtService(JwtProperties jwtProperties, final JwtKeyProvider jwtKeyProvider) {
+    this.jwtProperties = jwtProperties;
+    this.jwtKeyProvider = jwtKeyProvider;
+  }
 
   public String generateToken(User user) {
     Claims claims = Jwts.claims().setSubject(user.getId().toString());
     Date now = new Date();
-
     return Jwts.builder()
       .setClaims(claims)
       .setIssuedAt(now)
-      .setExpiration(new Date(now.getTime() + 1000 * 60 * 30))
+      .setExpiration(new Date(now.getTime() + jwtProperties.getExpiration()))
       .signWith(jwtKeyProvider.getPrivateKey(), SignatureAlgorithm.RS256)
       .compact();
   }

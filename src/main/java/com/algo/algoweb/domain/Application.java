@@ -1,14 +1,7 @@
 package com.algo.algoweb.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class Application {
     @Id
@@ -20,4 +13,39 @@ public class Application {
     private User user;
 
     private String introduction;
+
+    public Application() {}
+    public Application(User user, String introduction) {
+        this(null, user, introduction);
+    }
+
+    public Application(Integer id, User user, String introduction) {
+        this.id = id;
+        this.user = user;
+        this.introduction = introduction;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
 }

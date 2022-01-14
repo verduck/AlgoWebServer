@@ -8,69 +8,53 @@ import com.algo.algoweb.dto.PostDTO;
 import com.algo.algoweb.dto.UserDTO;
 import com.algo.algoweb.repository.LikesRepository;
 import com.algo.algoweb.repository.PostRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collections;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class PostService {
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
 
     @Autowired
-    private LikesRepository likesRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    public PostDTO writePost(PostDTO postDTO, User user) {
-        postDTO.setCreatedAt(LocalDate.now());
-        postDTO.setAuthor(modelMapper.map(user, UserDTO.class));
-        return modelMapper.map(postRepository.save(modelMapper.map(postDTO, Post.class)), PostDTO.class);
+    public PostService(final PostRepository postRepository, final LikesRepository likesRepository) {
+        this.postRepository = postRepository;
     }
 
-    public PostDTO editPost(PostDTO postDTO, User user) {
-        Optional<Post> optionalPost = postRepository.findById(postDTO.getId());
-        if (!optionalPost.isPresent()) {
-            return null;
-        }
-
-        Post post = optionalPost.get();
-        if (post.getUser().getId() != user.getId()) {
-            return null;
-        }
-        postDTO.setUpdatedAt(LocalDate.now());
-        post = postRepository.save(modelMapper.map(postDTO, Post.class));
-
-        return modelMapper.map(post, PostDTO.class);
+    public Post createPost(Post post) {
+        post.setCreatedAt(LocalDateTime.now());
+        return postRepository.save(post);
     }
 
-    public PostDTO loadPostById(int id) {
+    public Post updatePost(Post post) {
+        post.setUpdatedAt(LocalDateTime.now());
+        return postRepository.save(post);
+    }
+
+    public void deletePost(Post post) {
+        postRepository.delete(post);
+    }
+
+    public Post loadPostById(int id) {
         Optional<Post> optionalPost = postRepository.findById(id);
         if (optionalPost.isPresent()) {
-            return modelMapper.map(optionalPost.get(), PostDTO.class);
+            return optionalPost.get();
         } else {
             return null;
         }
     }
 
-    public Page<PostDTO> loadPostsByPage(Pageable pageable) {
-        return postRepository.findAll(pageable).map(p -> modelMapper.map(p, PostDTO.class));
+    public Page<Post> loadPostsByUser(User user, Pageable pageable) {
+        return postRepository.findByUser(user, pageable);
     }
 
-    public LikesDTO likePost(PostDTO postDTO, User user) {
-        Likes likes = new Likes();
-        likes.setPost(modelMapper.map(postDTO, Post.class));
-        likes.setUser(user);
-        likes = likesRepository.save(likes);
-
-        return modelMapper.map(likes, LikesDTO.class);
+    public Page<Post> loadPostsByPage(Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 }

@@ -1,8 +1,8 @@
 package com.algo.algoweb.util;
 
-import java.util.Base64;
-
 import org.springframework.stereotype.Component;
+
+import java.util.Base64;
 
 @Component
 public class Base64Util {

@@ -2,7 +2,6 @@ package com.algo.algoweb.service;
 
 import com.algo.algoweb.domain.Application;
 import com.algo.algoweb.domain.User;
-import com.algo.algoweb.dto.ApplicationDTO;
 import com.algo.algoweb.repository.ApplicationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,29 +11,31 @@ import java.util.Optional;
 
 @Service
 public class ApplicationService {
-    @Autowired
-    private ApplicationRepository applicationRepository;
+    private final ModelMapper modelMapper;
+    private final ApplicationRepository applicationRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
+    public ApplicationService(final ModelMapper modelMapper, final ApplicationRepository applicationRepository) {
+        this.modelMapper = modelMapper;
+        this.applicationRepository = applicationRepository;
+    }
 
-    public ApplicationDTO loadApplicationByUser(User user) {
+    public Application createApplication(Application application) {
+        return applicationRepository.save(application);
+    }
+
+    public Application loadApplicationByUser(User user) {
         Optional<Application> optionalApplication = applicationRepository.findByUser(user);
         if (optionalApplication.isPresent()) {
-            return modelMapper.map(optionalApplication.get(), ApplicationDTO.class);
+            return optionalApplication.get();
         } else {
-            Application application = new Application();
+            Application application = new Application(user, "");
             application.setUser(user);
-            application = applicationRepository.save(application);
-            return modelMapper.map(application, ApplicationDTO.class);
+            return createApplication(application);
         }
     }
 
-    public ApplicationDTO updateApplication(ApplicationDTO applicationDTO) {
-        Application application = modelMapper.map(applicationDTO, Application.class);
-
-        application = applicationRepository.save(application);
-
-        return modelMapper.map(application, ApplicationDTO.class);
+    public Application updateApplication(Application application) {
+        return applicationRepository.save(application);
     }
 }

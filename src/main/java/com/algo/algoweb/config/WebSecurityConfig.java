@@ -22,47 +22,49 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-  @Autowired
-  private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtRequestFilter jwtRequestFilter;
+    private final UserService userService;
 
-  @Autowired
-  private JwtRequestFilter jwtRequestFilter;
+    @Autowired
+    public WebSecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtRequestFilter jwtRequestFilter, UserService userService) {
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.jwtRequestFilter = jwtRequestFilter;
+        this.userService = userService;
+    }
 
-  @Autowired
-  private UserService userService;
-
-  @Bean
+    @Bean
 	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
 
-  @Bean
+    @Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
-  @Override
-  public void configure(WebSecurity webSecurity) {
-    webSecurity.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-  }
+    @Override
+    public void configure(WebSecurity webSecurity) {
+        webSecurity.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
 
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(userService);
-  }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userService);
+    }
 
-  @Override
-  protected void configure(HttpSecurity httpSecurity) throws Exception {
-    httpSecurity.httpBasic().disable()
-      .csrf().disable()
-      .authorizeRequests()
-      .antMatchers("/api/v1/auth/**").permitAll()
-      .antMatchers("/api/**").authenticated()
-      .anyRequest().permitAll().and()
-      .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
-      .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    @Override
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.httpBasic().disable()
+          .csrf().disable()
+          .authorizeRequests()
+          .antMatchers("/api/**/auth/**").permitAll()
+          .antMatchers("/api/**").authenticated()
+          .anyRequest().permitAll().and()
+          .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
+          .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-    httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-  }
+        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+    }
 }

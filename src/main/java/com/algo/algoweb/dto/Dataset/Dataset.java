@@ -1,25 +1,11 @@
 package com.algo.algoweb.dto.Dataset;
 
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
-@Data
-@NoArgsConstructor
-@RequiredArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Dataset {
-    @NonNull
     @XmlAttribute(name = "id")
     private String id;
 
@@ -30,4 +16,34 @@ public class Dataset {
     @XmlElementWrapper(name = "Rows")
     @XmlElement(name ="Row")
     private List<Row> rows = new ArrayList<>();
+
+    public Dataset() {}
+
+    public Dataset(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public List<Column> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(List<Column> columns) {
+        this.columns = columns;
+    }
+
+    public List<Row> getRows() {
+        return rows;
+    }
+
+    public void setRows(List<Row> rows) {
+        this.rows = rows;
+    }
 }

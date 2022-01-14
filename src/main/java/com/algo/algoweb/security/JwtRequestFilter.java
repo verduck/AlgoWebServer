@@ -1,7 +1,6 @@
 package com.algo.algoweb.security;
 
 import com.algo.algoweb.domain.User;
-import com.algo.algoweb.dto.UserDTO;
 import com.algo.algoweb.service.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,43 +18,46 @@ import java.io.IOException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-  @Autowired
-  private UserService userService;
+    private final JwtService jwtService;
+    private final UserService userService;
 
-  @Autowired
-  private JwtService jwtService;
+    @Autowired
+    public JwtRequestFilter(final JwtService jwtService, final UserService userService) {
+        this.jwtService = jwtService;
+        this.userService = userService;
+    }
 
-  @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
     
-    final String authorizationHeader = request.getHeader("Authorization");
-    Integer userId = -1;
-    String token = null;
+        final String authorizationHeader = request.getHeader("Authorization");
+        Integer userId = -1;
+        String token = null;
 
-    if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-      token = authorizationHeader.substring(7);
-      try {
-        userId = jwtService.getUserId(token);
-      } catch (IllegalArgumentException e) {
-				System.out.println("Unable to get JWT Token");
-			} catch (ExpiredJwtException e) {
-				System.out.println("JWT Token has expired");
-			}
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+          token = authorizationHeader.substring(7);
+          try {
+            userId = jwtService.getUserId(token);
+          } catch (IllegalArgumentException e) {
+                    System.out.println("Unable to get JWT Token");
+                } catch (ExpiredJwtException e) {
+                    System.out.println("JWT Token has expired");
+                }
+        }
+
+        if (userId != -1 && SecurityContextHolder.getContext().getAuthentication() == null) {
+          User user = userService.loadUserById(userId);
+
+          if (jwtService.validateToken(token, user)) {
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                            user, null, user.getAuthorities());
+                    usernamePasswordAuthenticationToken
+                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+          }
+        }
+        filterChain.doFilter(request, response);
     }
-
-    if (userId != -1 && SecurityContextHolder.getContext().getAuthentication() == null) {
-      User user = userService.loadUserById(userId);
-
-      if (jwtService.validateToken(token, user)) {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-						user, null, user.getAuthorities());
-				usernamePasswordAuthenticationToken
-						.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-      }
-    }
-    filterChain.doFilter(request, response);
-  }
   
 }

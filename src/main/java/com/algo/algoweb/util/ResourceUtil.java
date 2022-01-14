@@ -1,22 +1,25 @@
 package com.algo.algoweb.util;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 
-import lombok.AllArgsConstructor;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
-@AllArgsConstructor
 public class ResourceUtil {
   private final ResourceLoader resourceLoader;
+
+  @Autowired
+  public ResourceUtil(final ResourceLoader resourceLoader) {
+    this.resourceLoader = resourceLoader;
+  }
 
   public String asString(String resourcePath) throws IOException {
     Resource resource = resourceLoader.getResource(resourcePath);
