@@ -20,7 +20,6 @@ public class User implements UserDetails {
     private String password;
     private String name;
     private LocalDate birth;
-
     @Enumerated(EnumType.STRING)
     private Authority authority;
     @OneToOne(mappedBy = "user")
@@ -85,6 +84,10 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.asList(authority);
+    }
+
+    public Authority getAuthority() {
+        return authority;
     }
 
     public void setAuthority(Authority authority) {

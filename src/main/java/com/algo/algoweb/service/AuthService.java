@@ -22,6 +22,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 @Service
@@ -62,7 +63,6 @@ public class AuthService {
             );
             user = userService.loadUserByUsername(request.getUsername());
         } catch (BadCredentialsException e) {
-            System.out.println(e.getMessage());
             user = new User();
             user.setUsername(request.getUsername());
             user.setPassword(passwordEncoder.encode(request.getUsername()));
@@ -162,13 +162,13 @@ public class AuthService {
         factory.setConnectTimeout(3000);
         factory.setReadTimeout(3000);
         RestTemplate restTemplate = new RestTemplate(factory);
-        restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+        restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_XML_VALUE);
-        headers.setContentType(new MediaType("application", "xml", Charset.forName("UTF-8")));
+        headers.setContentType(new MediaType("application", "xml", StandardCharsets.UTF_8));
 
-        HttpEntity<XMain> request = new HttpEntity<XMain>(requestBody, headers);
+        HttpEntity<XMain> request = new HttpEntity<>(requestBody, headers);
         result = restTemplate.postForObject(url, request, XMain.class);
         return result;
     }
