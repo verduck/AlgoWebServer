@@ -1,7 +1,6 @@
 package com.algo.algoweb.domain;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -10,10 +9,12 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private String title;
-
     private String content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     @ManyToOne
     @JoinColumn(name = "author")
@@ -22,19 +23,20 @@ public class Post {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Likes> likes;
 
     public Post() {}
 
-    public Post(String title, String content, User user, LocalDateTime createdAt, LocalDateTime updatedAt, List<Likes> likes) {
-        this(null, title, content, user, createdAt, updatedAt, likes);
+    public Post(String title, String content, Board board, User user, LocalDateTime createdAt, LocalDateTime updatedAt, List<Likes> likes) {
+        this(null, title, content, board, user, createdAt, updatedAt, likes);
     }
 
-    public Post(Integer id, String title, String content, User user, LocalDateTime createdAt, LocalDateTime updatedAt, List<Likes> likes) {
+    public Post(Integer id, String title, String content, Board board, User user, LocalDateTime createdAt, LocalDateTime updatedAt, List<Likes> likes) {
         this.id = id;
         this.title = title;
         this.content = content;
+        this.board = board;
         this.user = user;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -95,5 +97,13 @@ public class Post {
 
     public void setLikes(List<Likes> likes) {
         this.likes = likes;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 }

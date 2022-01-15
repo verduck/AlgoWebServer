@@ -22,11 +22,11 @@ public class User implements UserDetails {
     private LocalDate birth;
     @Enumerated(EnumType.STRING)
     private Authority authority;
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Application application;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Likes> likes;
 
     public User() {}

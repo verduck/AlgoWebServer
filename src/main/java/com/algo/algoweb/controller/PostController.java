@@ -2,7 +2,6 @@ package com.algo.algoweb.controller;
 
 import com.algo.algoweb.domain.Post;
 import com.algo.algoweb.domain.User;
-import com.algo.algoweb.dto.LikesDTO;
 import com.algo.algoweb.dto.PostDTO;
 import com.algo.algoweb.service.PostService;
 import org.modelmapper.ModelMapper;
@@ -13,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/post")
@@ -33,6 +30,7 @@ public class PostController {
         PostDTO.Response response = new PostDTO.Response();
         Post post = modelMapper.map(request, Post.class);
         post.setUser(user);
+        post = postService.createPost(post);
         response.setSuccess(true);
         response.setMessage("게시물을 성공적으로 작성하였습니다.");
         response.setPost(modelMapper.map(post, PostDTO.class));
@@ -97,7 +95,7 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping
+    @DeleteMapping(value ="/{id}")
     public ResponseEntity<PostDTO.Response> deletePostById(@AuthenticationPrincipal User user, @PathVariable("id") Integer id) {
         PostDTO.Response response = new PostDTO.Response();
         Post post = postService.loadPostById(id);

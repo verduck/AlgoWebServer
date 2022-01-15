@@ -6,16 +6,18 @@ public class PostDTO {
   private Integer id;
   private String title;
   private String content;
+  private BoardDTO boardDTO;
   private UserDTO author;
   private LocalDate createdAt;
   private LocalDate updatedAt;
 
   public PostDTO () {}
 
-  public PostDTO(Integer id, String title, String content, UserDTO author, LocalDate createdAt, LocalDate updatedAt) {
+  public PostDTO(Integer id, String title, String content, BoardDTO boardDTO, UserDTO author, LocalDate createdAt, LocalDate updatedAt) {
     this.id = id;
     this.title = title;
     this.content = content;
+    this.boardDTO = boardDTO;
     this.author = author;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
@@ -69,15 +71,25 @@ public class PostDTO {
     this.updatedAt = updatedAt;
   }
 
+  public BoardDTO getBoardDTO() {
+    return boardDTO;
+  }
+
+  public void setBoardDTO(BoardDTO boardDTO) {
+    this.boardDTO = boardDTO;
+  }
+
   public static class Request {
     private String title;
     private String content;
+    private BoardDTO board;
 
     public Request() {}
 
-    public Request(Integer id, String title, String content) {
+    public Request(Integer id, String title, String content, BoardDTO board) {
       this.title = title;
       this.content = content;
+      this.board = board;
     }
 
     public String getTitle() {
@@ -94,6 +106,14 @@ public class PostDTO {
 
     public void setContent(String content) {
       this.content = content;
+    }
+
+    public BoardDTO getBoard() {
+      return board;
+    }
+
+    public void setBoard(BoardDTO board) {
+      this.board = board;
     }
   }
 

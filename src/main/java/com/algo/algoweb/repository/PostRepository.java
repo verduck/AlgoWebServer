@@ -1,5 +1,6 @@
 package com.algo.algoweb.repository;
 
+import com.algo.algoweb.domain.Board;
 import com.algo.algoweb.domain.Post;
 import com.algo.algoweb.domain.User;
 import org.springframework.data.domain.Page;
@@ -13,4 +14,5 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Integer> {
     Page<Post> findByUser(User user, Pageable pageable);
     Page<Post> findAll(Pageable pageable);
+    Page<Post> findByBoard(Board board, Pageable pageable);
 }
