@@ -5,7 +5,7 @@ plugins {
 	id 'com.moowork.node' version '1.3.1'
 }
 
-group = 'com.algo'
+group = 'kr.ac.jj'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
