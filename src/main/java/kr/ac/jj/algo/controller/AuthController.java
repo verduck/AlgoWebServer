@@ -20,7 +20,6 @@ public class AuthController {
     this.authService = authService;
   }
 
-
   @PostMapping(value = "/authenticate")
   public @ResponseBody ResponseEntity<AuthDTO.Response> authenticate(@RequestBody AuthDTO.Request request, HttpServletResponse httpServletResponse) {
     AuthDTO.Response response = authService.authenticate(request);

@@ -4,7 +4,9 @@ import kr.ac.jj.algo.domain.Authority;
 import kr.ac.jj.algo.domain.User;
 import kr.ac.jj.algo.dto.AuthDTO;
 import kr.ac.jj.algo.dto.Dataset.*;
+import kr.ac.jj.algo.dto.UserDTO;
 import kr.ac.jj.algo.security.JwtService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,13 +31,15 @@ public class AuthService {
     private final String url = "https://instar.jj.ac.kr/XMain";
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
     private final UserService userService;
     private final JwtService jwtService;
 
     @Autowired
-    public AuthService(final AuthenticationManager authenticationManager, final PasswordEncoder passwordEncoder, final UserService userService, final JwtService jwtService) {
+    public AuthService(final AuthenticationManager authenticationManager, final PasswordEncoder passwordEncoder, ModelMapper modelMapper, final UserService userService, final JwtService jwtService) {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
+        this.modelMapper = modelMapper;
         this.userService = userService;
         this.jwtService = jwtService;
     }
@@ -72,6 +76,7 @@ public class AuthService {
 
         response.setResult(true);
         response.setMessage("로그인에 성공하였습니다.");
+        response.setUser(modelMapper.map(user, UserDTO.class));
         response.setToken(jwtService.generateToken(user));
         return response;
     }

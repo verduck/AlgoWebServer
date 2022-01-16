@@ -32,13 +32,15 @@ public class AuthDTO {
 	public static class Response {
 		private boolean result;
 		private String message;
+		private UserDTO user;
 		private String token;
 
 		public Response() {}
 
-		public Response(boolean result, String message, String token) {
+		public Response(boolean result, String message, UserDTO user, String token) {
 			this.result = result;
 			this.message = message;
+			this.user = user;
 			this.token = token;
 		}
 
@@ -64,6 +66,14 @@ public class AuthDTO {
 
 		public void setToken(String token) {
 			this.token = token;
+		}
+
+		public UserDTO getUser() {
+			return user;
+		}
+
+		public void setUser(UserDTO user) {
+			this.user = user;
 		}
 	}
 }
