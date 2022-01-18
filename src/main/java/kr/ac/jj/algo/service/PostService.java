@@ -1,5 +1,7 @@
 package kr.ac.jj.algo.service;
 
+import javassist.NotFoundException;
+import kr.ac.jj.algo.domain.Likes;
 import kr.ac.jj.algo.domain.Post;
 import kr.ac.jj.algo.domain.User;
 import kr.ac.jj.algo.repository.LikesRepository;
@@ -15,10 +17,12 @@ import java.util.Optional;
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final LikesRepository likesRepository;
 
     @Autowired
     public PostService(final PostRepository postRepository, final LikesRepository likesRepository) {
         this.postRepository = postRepository;
+        this.likesRepository = likesRepository;
     }
 
     public Post createPost(Post post) {
@@ -50,5 +54,11 @@ public class PostService {
 
     public Page<Post> loadPostsByPage(Pageable pageable) {
         return postRepository.findAll(pageable);
+    }
+
+    public Likes likePostById(Integer id, User user) throws NotFoundException {
+        Post post = postRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 게시물을 찾을 수 없습니다. id: " + id));
+        Likes likes = new Likes(user, post);
+        return likesRepository.save(likes);
     }
 }

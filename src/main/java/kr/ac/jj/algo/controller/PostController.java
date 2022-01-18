@@ -1,7 +1,10 @@
 package kr.ac.jj.algo.controller;
 
+import javassist.NotFoundException;
+import kr.ac.jj.algo.domain.Likes;
 import kr.ac.jj.algo.domain.Post;
 import kr.ac.jj.algo.domain.User;
+import kr.ac.jj.algo.dto.LikesDTO;
 import kr.ac.jj.algo.dto.PostDTO;
 import kr.ac.jj.algo.service.PostService;
 import org.modelmapper.ModelMapper;
@@ -109,6 +112,20 @@ public class PostController {
         response.setSuccess(true);
         response.setMessage("게시물을 성공적으로 삭제하였습니다.");
         response.setPost(modelMapper.map(post, PostDTO.class));
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value = "/{id}/like")
+    public ResponseEntity<LikesDTO.Response> likePost(@AuthenticationPrincipal User user, @PathVariable("id") Integer id) {
+        LikesDTO.Response response = new LikesDTO.Response();
+        try {
+            Likes likes = postService.likePostById(id, user);
+            response.setSuccess(true);
+            response.setMessage("게시물을 좋아합니다.");
+            response.setLikes(modelMapper.map(likes, LikesDTO.class));
+        } catch (NotFoundException e) {
+            response.setMessage(e.getMessage());
+        }
         return ResponseEntity.ok(response);
     }
 }
