@@ -1,24 +1,27 @@
 package kr.ac.jj.algo.dto;
 
-import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.time.LocalDateTime;
 
 public class PostDTO {
   private Integer id;
   private String title;
   private String content;
-  private BoardDTO boardDTO;
-  private UserDTO author;
-  private LocalDate createdAt;
-  private LocalDate updatedAt;
+  private BoardDTO board;
+  @JsonProperty("author")
+  private UserDTO user;
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
 
   public PostDTO () {}
 
-  public PostDTO(Integer id, String title, String content, BoardDTO boardDTO, UserDTO author, LocalDate createdAt, LocalDate updatedAt) {
+  public PostDTO(Integer id, String title, String content, BoardDTO board, UserDTO user, LocalDateTime createdAt, LocalDateTime updatedAt) {
     this.id = id;
     this.title = title;
     this.content = content;
-    this.boardDTO = boardDTO;
-    this.author = author;
+    this.board = board;
+    this.user = user;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
@@ -47,36 +50,36 @@ public class PostDTO {
     this.content = content;
   }
 
-  public UserDTO getAuthor() {
-    return author;
+  public UserDTO getUser() {
+    return user;
   }
 
-  public void setAuthor(UserDTO author) {
-    this.author = author;
+  public void setUser(UserDTO user) {
+    this.user = user;
   }
 
-  public LocalDate getCreatedAt() {
+  public LocalDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(LocalDate createdAt) {
+  public void setCreatedAt(LocalDateTime createdAt) {
     this.createdAt = createdAt;
   }
 
-  public LocalDate getUpdatedAt() {
+  public LocalDateTime getUpdatedAt() {
     return updatedAt;
   }
 
-  public void setUpdatedAt(LocalDate updatedAt) {
+  public void setUpdatedAt(LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
   }
 
-  public BoardDTO getBoardDTO() {
-    return boardDTO;
+  public BoardDTO getBoard() {
+    return board;
   }
 
-  public void setBoardDTO(BoardDTO boardDTO) {
-    this.boardDTO = boardDTO;
+  public void setBoard(BoardDTO board) {
+    this.board = board;
   }
 
   public static class Request {
