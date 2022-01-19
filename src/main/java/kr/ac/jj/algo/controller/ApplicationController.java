@@ -6,6 +6,7 @@ import kr.ac.jj.algo.dto.ApplicationDTO;
 import kr.ac.jj.algo.service.ApplicationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +33,16 @@ public class ApplicationController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping
-    public ResponseEntity<ApplicationDTO.Response> putMyApplication(@AuthenticationPrincipal User user, @RequestBody ApplicationDTO.Request request) {
+    @PostMapping
+    public ResponseEntity<ApplicationDTO.Response> postMyApplication(@AuthenticationPrincipal User user, @RequestBody ApplicationDTO.Request request) {
         ApplicationDTO.Response response = new ApplicationDTO.Response();
-        Application application = modelMapper.map(request, Application.class);
+        if (request.getIntroduction() == null) {
+            response.setSuccess(false);
+            response.setMessage("간단 소개글을 입력하세요.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        Application application = applicationService.loadApplicationByUser(user);
+        application.setIntroduction(request.getIntroduction());
         application = applicationService.updateApplication(application);
         response.setSuccess(true);
         response.setMessage("지원서를 성공적으로 변경하였습니다.");

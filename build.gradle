@@ -29,22 +29,3 @@ test {
 	useJUnitPlatform()
 }
 
-task installNpm(type: NpmTask) {
-	workingDir = file('app')
-	args =['install']
-}
-
-task buildReactApp(type: NpmTask) {
-	workingDir = file('app')
-	args = ['run', 'build']
-}
-
-task copyReactApp(type: Copy) {
-	from 'app/build'
-	into 'src/main/resources/static'
-}
-
-buildReactApp.dependsOn(installNpm)
-copyReactApp.dependsOn(buildReactApp)
-compileJava.dependsOn(copyReactApp)
-
