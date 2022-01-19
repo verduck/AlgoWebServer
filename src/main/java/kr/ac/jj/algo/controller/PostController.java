@@ -41,7 +41,7 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<PostDTO>> getPostsByPage(@AuthenticationPrincipal User user, @RequestParam Pageable pageable) {
+    public ResponseEntity<Page<PostDTO>> getPostsByPage(@AuthenticationPrincipal User user, Pageable pageable) {
         Page<PostDTO> response = postService.loadPostsByPage(pageable).map(p -> modelMapper.map(p, PostDTO.class));
         return ResponseEntity.ok(response);
     }
