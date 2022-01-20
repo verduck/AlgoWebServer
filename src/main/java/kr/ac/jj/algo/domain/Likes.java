@@ -3,6 +3,7 @@ package kr.ac.jj.algo.domain;
 import javax.persistence.*;
 
 @Entity
+@Table(name="likes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id","post_id"})})
 public class Likes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
