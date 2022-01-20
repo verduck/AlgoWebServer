@@ -58,6 +58,10 @@ public class PostService {
 
     public Likes likePostById(Integer id, User user) throws NotFoundException {
         Post post = postRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 게시물을 찾을 수 없습니다. id: " + id));
+        Optional<Likes> optionalLikes = likesRepository.findByUserAndPost(user, post);
+        if (optionalLikes.isPresent()) {
+            return optionalLikes.get();
+        }
         Likes likes = new Likes(user, post);
         return likesRepository.save(likes);
     }
