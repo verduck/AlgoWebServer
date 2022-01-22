@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -37,6 +38,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User updateUser(User user) {
+        user.setUpdatedAt(LocalDateTime.now());
         return userRepository.save(user);
     }
 

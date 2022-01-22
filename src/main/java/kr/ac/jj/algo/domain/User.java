@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -18,8 +19,12 @@ public class User implements UserDetails {
     private String password;
     private String name;
     private LocalDate birth;
+    private char gender;
+    private byte grade;
+    private String status;
     @Enumerated(EnumType.STRING)
     private Authority authority;
+    private LocalDateTime updatedAt;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Application application;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -29,12 +34,16 @@ public class User implements UserDetails {
 
     public User() {}
 
-    public User(String username, String password, String name, LocalDate birth, Authority authority) {
+    public User(String username, String password, String name, LocalDate birth, char gender, byte grade, String status, Authority authority, LocalDateTime updatedAt) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.birth = birth;
+        this.gender = gender;
+        this.grade = grade;
+        this.status = status;
         this.authority = authority;
+        this.updatedAt = updatedAt;
     }
 
     public Integer getId() {
@@ -110,5 +119,37 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public char getGender() {
+        return gender;
+    }
+
+    public void setGender(char gender) {
+        this.gender = gender;
+    }
+
+    public byte getGrade() {
+        return grade;
+    }
+
+    public void setGrade(byte grade) {
+        this.grade = grade;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

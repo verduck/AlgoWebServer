@@ -24,6 +24,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.HashMap;
 
 @Service
@@ -44,13 +48,23 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
+    private RestTemplate restTemplate() {
+        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+        factory.setConnectTimeout(3000);
+        factory.setReadTimeout(3000);
+        RestTemplate restTemplate = new RestTemplate(factory);
+        restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+        return restTemplate;
+    }
+
     public AuthDTO.Response authenticate(AuthDTO.Request request) {
         AuthDTO.Response response = new AuthDTO.Response();
-        XMain xMain = loginJJInstar(request.getUsername(), request.getPassword());
+        RestTemplate restTemplate = restTemplate();
+        XMain xMain = loginJJInstar(restTemplate, request.getUsername(), request.getPassword());
         Dataset dataset = xMain.findDatasetById("ds_info");
         HashMap<String, String> datasetMap = new HashMap<>();
         if (dataset == null) {
-            response.setResult(false);
+            response.setSuccess(false);
             response.setMessage("학번 또는 비밀번호가 일치하지 않습니다.");
             return response;
         }
@@ -74,7 +88,26 @@ public class AuthService {
             user = userService.createUser(user);
         }
 
-        response.setResult(true);
+        if (user.getUpdatedAt() == null || user.getUpdatedAt().plusWeeks(1).isBefore(LocalDateTime.now())) {
+            xMain = defaultJJInstar(restTemplate, request.getUsername());
+            dataset = xMain.findDatasetById("ds_list");
+            datasetMap.clear();
+            if (dataset != null) {
+                row = dataset.getRows().get(0);
+                for (Col c : row.getCols()) {
+                    datasetMap.put(c.getId(), c.getValue());
+                }
+                if (user.getUpdatedAt() == null) {
+                    user.setBirth(LocalDate.parse(datasetMap.get("BIRTH"), DateTimeFormatter.ofPattern("yyyyMMdd")));
+                    user.setGender(datasetMap.get("GENDER").equals("남") ? 'M' : 'F');
+                }
+                user.setGrade(Byte.parseByte(datasetMap.get("HAKG_YEAR_EHJ")));
+                user.setStatus(datasetMap.get("HAKJ_BD_CODE"));
+                userService.updateUser(user);
+            }
+        }
+
+        response.setSuccess(true);
         response.setMessage("로그인에 성공하였습니다.");
         response.setUser(modelMapper.map(user, UserDTO.class));
         response.setToken(jwtService.generateToken(user));
@@ -96,17 +129,17 @@ public class AuthService {
         if (refresh != null && jwtService.isExpired(refresh)) {
             int userId = jwtService.getUserId(refresh);
             User user = userService.loadUserById(userId);
-            response.setResult(true);
+            response.setSuccess(true);
             response.setMessage("토큰이 재발행되었습니다.");
             response.setToken(jwtService.generateToken(user));
         } else {
-            response.setResult(false);
+            response.setSuccess(false);
             response.setMessage("토큰 재발행에 실패하였습니다.");
         }
         return response;
     }
 
-    public XMain loginJJInstar(String username, String password) {
+    public XMain loginJJInstar(final RestTemplate restTemplate, String username, String password) {
         XMain result;
 
         XMain requestBody = new XMain();
@@ -162,18 +195,88 @@ public class AuthService {
         dataset = new Dataset("gds_user");
         requestBody.getDatasets().add(dataset);
 
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-        factory.setConnectTimeout(3000);
-        factory.setReadTimeout(3000);
-        RestTemplate restTemplate = new RestTemplate(factory);
-        restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", MediaType.APPLICATION_XML_VALUE);
+        headers.setContentType(new MediaType("application", "xml", StandardCharsets.UTF_8));
+        HttpEntity<XMain> request = new HttpEntity<>(requestBody, headers);
+        result = restTemplate.postForObject(url, request, XMain.class);
+        return result;
+    }
+
+    private XMain defaultJJInstar(final RestTemplate restTemplate, String studentId) {
+        XMain result;
+
+        XMain requestBody = new XMain();
+        requestBody.getParameters().add(new Parameter("fsp_action", "xDefaultAction"));
+        requestBody.getParameters().add(new Parameter("fsp_cmd", "execute"));
+        requestBody.getParameters().add(new Parameter("GV_USER_ID", "undefined"));
+        requestBody.getParameters().add(new Parameter("GV_IP_ADDRESS", "undefined"));
+        requestBody.getParameters().add(new Parameter("fsp_logId", "all"));
+        requestBody.getParameters().add(new Parameter("DATE_YY", "sung"));
+        requestBody.getParameters().add(new Parameter("DATE_HAKGI", "p"));
+        requestBody.getParameters().add(new Parameter("HAKBUN", studentId));
+
+        Dataset dataset = new Dataset("fsp_ds_cmd");
+        dataset.getColumns().add(new Column("TX_NAME", "string", "100"));
+        dataset.getColumns().add(new Column("TYPE", "string", "10"));
+        dataset.getColumns().add(new Column("SQL_ID", "string", "200"));
+        dataset.getColumns().add(new Column("KEY_SQL_ID", "string", "200"));
+        dataset.getColumns().add(new Column("KEY_INCREMENT", "INT", "10"));
+        dataset.getColumns().add(new Column("CALLBACK_SQL_ID", "STRING", "200"));
+        dataset.getColumns().add(new Column("INSERT_SQL_ID", "STRING", "200"));
+        dataset.getColumns().add(new Column("UPDATE_SQL_ID", "STRING", "200"));
+        dataset.getColumns().add(new Column("DELETE_SQL_ID", "STRING", "200"));
+        dataset.getColumns().add(new Column("SAVE_FLAG_COLUMN", "STRING", "200"));
+        dataset.getColumns().add(new Column("USE_INPUT", "STRING", "1"));
+        dataset.getColumns().add(new Column("USE_ORDER", "STRING", "1"));
+        dataset.getColumns().add(new Column("KEY_ZERO_LEN", "INT", "10"));
+        dataset.getColumns().add(new Column("BIZ_NAME", "STRING", "100"));
+        dataset.getColumns().add(new Column("PAGE_NO", "INT", "10"));
+        dataset.getColumns().add(new Column("PAGE_SIZE", "INT", "10"));
+        dataset.getColumns().add(new Column("READ_ALL", "STRING", "1"));
+        dataset.getColumns().add(new Column("EXEC_TYPE", "STRING", "2"));
+        dataset.getColumns().add(new Column("EXEC", "STRING", "1"));
+        dataset.getColumns().add(new Column("FAIL", "STRING", "1"));
+        dataset.getColumns().add(new Column("FAIL_MSG", "STRING", "200"));
+        dataset.getColumns().add(new Column("EXEC_CNT", "INT", "1"));
+        dataset.getColumns().add(new Column("MSG", "STRING", "200"));
+        Row row = new Row();
+        row.getCols().add(new Col("TX_NAME"));
+        row.getCols().add(new Col("TYPE", "N"));
+        row.getCols().add(new Col("SQL_ID", "com_member:COM_INFO_JJUP_R01"));
+        row.getCols().add(new Col("KEY_SQL_ID"));
+        row.getCols().add(new Col("KEY_INCREMENT", "0"));
+        row.getCols().add(new Col("CALLBACK_SQL_ID"));
+        row.getCols().add(new Col("INSERT_SQL_ID"));
+        row.getCols().add(new Col("UPDATE_SQL_ID"));
+        row.getCols().add(new Col("DELETE_SQL_ID"));
+        row.getCols().add(new Col("SAVE_FLAG_COLUMN"));
+        row.getCols().add(new Col("USE_INPUT"));
+        row.getCols().add(new Col("USE_ORDER"));
+        row.getCols().add(new Col("KEY_ZERO_LEN", "0"));
+        row.getCols().add(new Col("BIZ_NAME"));
+        row.getCols().add(new Col("PAGE_NO"));
+        row.getCols().add(new Col("PAGE_SIZE"));
+        row.getCols().add(new Col("READ_ALL"));
+        row.getCols().add(new Col("EXEC_TYPE", "B"));
+        row.getCols().add(new Col("EXEC"));
+        row.getCols().add(new Col("FAIL"));
+        row.getCols().add(new Col("FAIL_MSG"));
+        row.getCols().add(new Col("EXEC_CNT", "0"));
+        row.getCols().add(new Col("MSG"));
+        dataset.getRows().add(row);
+        requestBody.getDatasets().add(dataset);
+
+        dataset = new Dataset("gds_user");
+        requestBody.getDatasets().add(dataset);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_XML_VALUE);
         headers.setContentType(new MediaType("application", "xml", StandardCharsets.UTF_8));
-
+        headers.setAccept(Arrays.asList(new MediaType("application", "xml", StandardCharsets.UTF_8)));
         HttpEntity<XMain> request = new HttpEntity<>(requestBody, headers);
         result = restTemplate.postForObject(url, request, XMain.class);
+
         return result;
     }
 }

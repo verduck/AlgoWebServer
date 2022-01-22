@@ -15,6 +15,10 @@ public class Col {
 
     public Col() {}
 
+    public Col(String id) {
+        this.id = id;
+    }
+
     public Col(String id, String value) {
         this.id = id;
         this.value = value;

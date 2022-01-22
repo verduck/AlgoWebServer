@@ -23,7 +23,7 @@ public class AuthController {
   @PostMapping(value = "/authenticate")
   public @ResponseBody ResponseEntity<AuthDTO.Response> authenticate(@RequestBody AuthDTO.Request request, HttpServletResponse httpServletResponse) {
     AuthDTO.Response response = authService.authenticate(request);
-    if (response.isResult()) {
+    if (response.isSuccess()) {
       return ResponseEntity.ok(response);
     } else {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
@@ -33,7 +33,7 @@ public class AuthController {
   @RequestMapping(value = "/reissue", method = RequestMethod.GET)
   public @ResponseBody ResponseEntity<AuthDTO.Response> reissue(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
     AuthDTO.Response response = authService.reissue(httpServletRequest, httpServletResponse);
-    if (response.isResult()) {
+    if (response.isSuccess()) {
       return ResponseEntity.ok(response);
     } else {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
