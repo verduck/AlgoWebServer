@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -29,9 +30,11 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Application application;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Post> posts;
+    private List<Post> posts = new ArrayList<>();;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Likes> likes;
+    private List<Likes> likes = new ArrayList<>();;
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    private List<Reply> replies = new ArrayList<>();;
 
     public User() {}
 
@@ -130,6 +133,14 @@ public class User implements UserDetails {
         this.updatedAt = updatedAt;
     }
 
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
+    }
+
     public char getGender() {
         return gender;
     }
@@ -152,5 +163,21 @@ public class User implements UserDetails {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public List<Likes> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<Likes> likes) {
+        this.likes = likes;
     }
 }
