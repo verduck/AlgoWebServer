@@ -9,15 +9,17 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String value;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Post> posts;
 
     public Board() {}
 
-    public Board(Long id, String name, List<Post> posts) {
+    public Board(Long id, String name, String value, List<Post> posts) {
         this.id = id;
         this.name = name;
+        this.value = value;
         this.posts = posts;
     }
 
@@ -43,5 +45,13 @@ public class Board {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

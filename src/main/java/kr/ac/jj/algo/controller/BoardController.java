@@ -36,12 +36,12 @@ public class BoardController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<BoardDTO.Response> getBoardById(@PathVariable Long id) {
+    @GetMapping(value = "/{name}")
+    public ResponseEntity<BoardDTO.Response> getBoardById(@PathVariable String name) {
         BoardDTO.Response response = new BoardDTO.Response();
         Board board;
         try {
-            board = boardService.loadBoardById(id);
+            board = boardService.loadBoardByName(name);
             response.setSuccess(true);
             response.setMessage("게시판 정보를 성공적으로 불러왔습니다.");
             response.setBoard(modelMapper.map(board, BoardDTO.class));
@@ -53,12 +53,12 @@ public class BoardController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/{id}/posts")
-    public ResponseEntity<PostsDTO> getPostsByBoard(@PathVariable Long id, @RequestParam Pageable pageable) {
+    @GetMapping(value = "/{name}/posts")
+    public ResponseEntity<PostsDTO> getPostsByBoard(@PathVariable String name, @RequestParam Pageable pageable) {
         PostsDTO response = new PostsDTO();
         Board board;
         try {
-            board = boardService.loadBoardById(id);
+            board = boardService.loadBoardByName(name);
         } catch (NotFoundException e) {
             response.setSuccess(false);
             response.setMessage(e.getMessage());

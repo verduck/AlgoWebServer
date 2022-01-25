@@ -1,22 +1,14 @@
 package kr.ac.jj.algo.dto;
 
 public class BoardDTO {
-    private Long id;
     private String name;
+    private String value;
 
     public BoardDTO() {}
 
-    public BoardDTO(Long id, String name) {
-        this.id = id;
+    public BoardDTO(Long id, String name, String value) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.value = value;
     }
 
     public String getName() {
@@ -25,6 +17,42 @@ public class BoardDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public static class Request {
+        private Long id;
+        private String name;
+
+        public Request() {}
+
+        public Request(Long id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
     public static class Response {
