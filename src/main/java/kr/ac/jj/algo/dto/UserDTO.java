@@ -8,14 +8,20 @@ public class UserDTO {
     private String username;
     private String name;
     private LocalDate birth;
+    private char gender;
+    private byte grade;
+    private String status;
     private Authority authority;
 
     public UserDTO() {}
 
-    public UserDTO(String username, String name, LocalDate birth, Authority authority) {
+    public UserDTO(String username, String name, LocalDate birth, char gender, byte grade, String status, Authority authority) {
         this.username = username;
         this.name = name;
         this.birth = birth;
+        this.gender = gender;
+        this.grade = grade;
+        this.status = status;
         this.authority = authority;
     }
 
@@ -49,6 +55,30 @@ public class UserDTO {
 
     public void setAuthority(Authority authority) {
         this.authority = authority;
+    }
+
+    public char getGender() {
+        return gender;
+    }
+
+    public void setGender(char gender) {
+        this.gender = gender;
+    }
+
+    public byte getGrade() {
+        return grade;
+    }
+
+    public void setGrade(byte grade) {
+        this.grade = grade;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public static class Request {
