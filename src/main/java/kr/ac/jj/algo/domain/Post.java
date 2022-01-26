@@ -2,6 +2,7 @@ package kr.ac.jj.algo.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,10 @@ public class Post {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Likes> likes;
+    private List<Likes> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Reply> replies = new ArrayList<>();
 
     public Post() {}
 
@@ -105,5 +109,13 @@ public class Post {
 
     public void setBoard(Board board) {
         this.board = board;
+    }
+
+    public List<Reply> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(List<Reply> replies) {
+        this.replies = replies;
     }
 }

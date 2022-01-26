@@ -14,9 +14,6 @@ public class Board {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Post> posts;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
-    private List<Reply> replies;
-
     public Board() {}
 
     public Board(Long id, String name, String value, List<Post> posts) {

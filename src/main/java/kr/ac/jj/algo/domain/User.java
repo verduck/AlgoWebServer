@@ -33,7 +33,7 @@ public class User implements UserDetails {
     private List<Post> posts = new ArrayList<>();;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Likes> likes = new ArrayList<>();;
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Reply> replies = new ArrayList<>();;
 
     public User() {}
