@@ -10,16 +10,18 @@ public class Board {
     private Long id;
     private String name;
     private String value;
+    private String icon;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Post> posts;
 
     public Board() {}
 
-    public Board(Long id, String name, String value, List<Post> posts) {
+    public Board(Long id, String name, String value, String icon, List<Post> posts) {
         this.id = id;
         this.name = name;
         this.value = value;
+        this.icon = icon;
         this.posts = posts;
     }
 
@@ -53,5 +55,13 @@ public class Board {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

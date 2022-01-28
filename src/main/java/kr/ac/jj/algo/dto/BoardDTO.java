@@ -3,12 +3,14 @@ package kr.ac.jj.algo.dto;
 public class BoardDTO {
     private String name;
     private String value;
+    private String icon;
 
     public BoardDTO() {}
 
-    public BoardDTO(Long id, String name, String value) {
+    public BoardDTO(Long id, String name, String value, String icon) {
         this.name = name;
         this.value = value;
+        this.icon = icon;
     }
 
     public String getName() {
@@ -25,6 +27,14 @@ public class BoardDTO {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public static class Request {
