@@ -3,9 +3,11 @@ package kr.ac.jj.algo.service;
 import javassist.NotFoundException;
 import kr.ac.jj.algo.domain.Likes;
 import kr.ac.jj.algo.domain.Post;
+import kr.ac.jj.algo.domain.Reply;
 import kr.ac.jj.algo.domain.User;
 import kr.ac.jj.algo.repository.LikesRepository;
 import kr.ac.jj.algo.repository.PostRepository;
+import kr.ac.jj.algo.repository.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,11 +19,13 @@ import java.util.Optional;
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final ReplyRepository replyRepository;
     private final LikesRepository likesRepository;
 
     @Autowired
-    public PostService(final PostRepository postRepository, final LikesRepository likesRepository) {
+    public PostService(final PostRepository postRepository, ReplyRepository replyRepository, final LikesRepository likesRepository) {
         this.postRepository = postRepository;
+        this.replyRepository = replyRepository;
         this.likesRepository = likesRepository;
     }
 
@@ -39,21 +43,21 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    public Post loadPostById(int id) {
-        Optional<Post> optionalPost = postRepository.findById(id);
-        if (optionalPost.isPresent()) {
-            return optionalPost.get();
-        } else {
-            return null;
-        }
+    public Post loadPostById(int id) throws NotFoundException {
+        return postRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 게시물을 찾을 수 없습니다. id : " + id));
     }
 
     public Page<Post> loadPostsByUser(User user, Pageable pageable) {
         return postRepository.findByUser(user, pageable);
     }
 
-    public Page<Post> loadPostsByPage(Pageable pageable) {
+    public Page<Post> loadPosts(Pageable pageable) {
         return postRepository.findAll(pageable);
+    }
+
+    public Page<Reply> loadRepliesByPostId(Integer id, Pageable pageable) throws NotFoundException {
+        Post post = postRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 개시물을 찾을 수 없습니다. id: " + id));
+        return replyRepository.findByPost(post, pageable);
     }
 
     public Likes likePostById(Integer id, User user) throws NotFoundException {

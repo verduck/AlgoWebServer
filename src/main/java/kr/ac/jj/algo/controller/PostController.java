@@ -42,14 +42,21 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<Page<PostDTO>> getPostsByPage(@AuthenticationPrincipal User user, Pageable pageable) {
-        Page<PostDTO> response = postService.loadPostsByPage(pageable).map(p -> modelMapper.map(p, PostDTO.class));
+        Page<PostDTO> response = postService.loadPosts(pageable).map(p -> modelMapper.map(p, PostDTO.class));
         return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<PostDTO.Response> getPostById(@AuthenticationPrincipal User user, @PathVariable("id") Integer id) {
         PostDTO.Response response = new PostDTO.Response();
-        Post post = postService.loadPostById(id);
+        Post post;
+        try {
+            post = postService.loadPostById(id);
+        } catch (NotFoundException e) {
+            response.setSuccess(false);
+            response.setMessage(e.getMessage());
+            return ResponseEntity.ok(response);
+        }
         response.setSuccess(true);
         response.setMessage("게시물을 성공적으로 불러왔습니다.");
         response.setPost(modelMapper.map(post, PostDTO.class));
@@ -59,8 +66,15 @@ public class PostController {
     @PutMapping(value ="/{id}")
     public ResponseEntity<PostDTO.Response> putPostById(@AuthenticationPrincipal User user, @PathVariable("id") Integer id, @RequestBody PostDTO.Request request) {
         PostDTO.Response response = new PostDTO.Response();
-        Post post = postService.loadPostById(id);
-        if (user.getId() != post.getUser().getId()) {
+        Post post;
+        try {
+            post = postService.loadPostById(id);
+        } catch (NotFoundException e) {
+            response.setSuccess(false);
+            response.setMessage(e.getMessage());
+            return ResponseEntity.ok(response);
+        }
+        if (user.getId().equals(post.getUser().getId())) {
             response.setSuccess(false);
             response.setMessage("변경 권한이 없습니다.");
             response.setPost(modelMapper.map(post, PostDTO.class));
@@ -78,8 +92,15 @@ public class PostController {
     @PatchMapping(value = "/{id}")
     public ResponseEntity<PostDTO.Response> patchPostById(@AuthenticationPrincipal User user, @PathVariable("id") Integer id, @RequestBody PostDTO.Request request) {
         PostDTO.Response response = new PostDTO.Response();
-        Post post = postService.loadPostById(id);
-        if (user.getId() != post.getUser().getId()) {
+        Post post;
+        try {
+            post = postService.loadPostById(id);
+        } catch (NotFoundException e) {
+            response.setSuccess(false);
+            response.setMessage(e.getMessage());
+            return ResponseEntity.ok(response);
+        }
+        if (user.getId().equals(post.getUser().getId())) {
             response.setSuccess(false);
             response.setMessage("변경 권한이 없습니다.");
             response.setPost(modelMapper.map(post, PostDTO.class));
@@ -101,8 +122,15 @@ public class PostController {
     @DeleteMapping(value ="/{id}")
     public ResponseEntity<PostDTO.Response> deletePostById(@AuthenticationPrincipal User user, @PathVariable("id") Integer id) {
         PostDTO.Response response = new PostDTO.Response();
-        Post post = postService.loadPostById(id);
-        if (user.getId() != post.getUser().getId()) {
+        Post post;
+        try {
+            post = postService.loadPostById(id);
+        } catch (NotFoundException e) {
+            response.setSuccess(false);
+            response.setMessage(e.getMessage());
+            return ResponseEntity.ok(response);
+        }
+        if (user.getId().equals(post.getUser().getId())) {
             response.setSuccess(false);
             response.setMessage("삭제 권한이 없습니다.");
             response.setPost(modelMapper.map(post, PostDTO.class));
