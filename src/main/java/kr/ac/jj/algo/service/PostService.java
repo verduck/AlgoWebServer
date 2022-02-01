@@ -69,4 +69,8 @@ public class PostService {
         Likes likes = new Likes(user, post);
         return likesRepository.save(likes);
     }
+
+    public Long loadLikesCountByPostId(Integer id) {
+        return likesRepository.countByPostId(id);
+    }
 }

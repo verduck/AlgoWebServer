@@ -6,6 +6,7 @@ import kr.ac.jj.algo.domain.Post;
 import kr.ac.jj.algo.domain.User;
 import kr.ac.jj.algo.dto.LikesDTO;
 import kr.ac.jj.algo.dto.PostDTO;
+import kr.ac.jj.algo.dto.ReplyDTO;
 import kr.ac.jj.algo.service.PostService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,10 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<PostDTO>> getPostsByPage(@AuthenticationPrincipal User user, Pageable pageable) {
-        Page<PostDTO> response = postService.loadPosts(pageable).map(p -> modelMapper.map(p, PostDTO.class));
+    public ResponseEntity<Page<PostDTO>> getPostsByPage(@AuthenticationPrincipal User user, Pageable pageable){
+        Page<PostDTO> response = postService.loadPosts(pageable)
+                .map(p -> modelMapper.map(p, PostDTO.class));
+        response.forEach(p -> p.setNumLikes(postService.loadLikesCountByPostId(p.getId())));
         return ResponseEntity.ok(response);
     }
 
@@ -57,9 +60,11 @@ public class PostController {
             response.setMessage(e.getMessage());
             return ResponseEntity.ok(response);
         }
+        PostDTO postDTO = modelMapper.map(post, PostDTO.class);
+        postDTO.setNumLikes(postService.loadLikesCountByPostId(id));
         response.setSuccess(true);
         response.setMessage("게시물을 성공적으로 불러왔습니다.");
-        response.setPost(modelMapper.map(post, PostDTO.class));
+        response.setPost(postDTO);
         return ResponseEntity.ok(response);
     }
 
@@ -154,6 +159,12 @@ public class PostController {
         } catch (NotFoundException e) {
             response.setMessage(e.getMessage());
         }
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/{id}/reply")
+    public ResponseEntity<Page<ReplyDTO>> loadRepliesByPostId(@PathVariable("id") Integer id, Pageable pageable) throws NotFoundException {
+        Page<ReplyDTO> response = postService.loadRepliesByPostId(id, pageable).map(r -> modelMapper.map(r, ReplyDTO.class));
         return ResponseEntity.ok(response);
     }
 }

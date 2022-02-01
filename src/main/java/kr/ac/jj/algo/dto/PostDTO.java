@@ -13,10 +13,11 @@ public class PostDTO {
   private UserDTO user;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
+  private Long numLikes;
 
   public PostDTO () {}
 
-  public PostDTO(Integer id, String title, String content, BoardDTO board, UserDTO user, LocalDateTime createdAt, LocalDateTime updatedAt) {
+  public PostDTO(Integer id, String title, String content, BoardDTO board, UserDTO user, LocalDateTime createdAt, LocalDateTime updatedAt, Long numLikes) {
     this.id = id;
     this.title = title;
     this.content = content;
@@ -24,6 +25,7 @@ public class PostDTO {
     this.user = user;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.numLikes = numLikes;
   }
 
   public Integer getId() {
@@ -80,6 +82,14 @@ public class PostDTO {
 
   public void setBoard(BoardDTO board) {
     this.board = board;
+  }
+
+  public Long getNumLikes() {
+    return numLikes;
+  }
+
+  public void setNumLikes(Long numLikes) {
+    this.numLikes = numLikes;
   }
 
   public static class Request {
