@@ -2,6 +2,7 @@ package kr.ac.jj.algo.controller;
 
 import kr.ac.jj.algo.domain.Authority;
 import kr.ac.jj.algo.domain.User;
+import kr.ac.jj.algo.dto.AdminsListDTO;
 import kr.ac.jj.algo.dto.UserDTO;
 import kr.ac.jj.algo.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -49,9 +50,13 @@ public class UserController {
     }
 
     @GetMapping(value = "/admins")
-    public ResponseEntity<List<UserDTO>> getAdmins() {
-        List<UserDTO> response = userService.loadUsersByAuthority(Authority.ROLE_ADMIN).stream().map(u -> modelMapper.map(u, UserDTO.class)).collect(Collectors.toList());
-        return ResponseEntity.ok(response);
+    public ResponseEntity<AdminsListDTO> getAdmins() {
+        AdminsListDTO adminsList = new AdminsListDTO();
+        List<UserDTO> admins = userService.loadUsersByAuthority(Authority.ROLE_ADMIN).stream().map(u -> modelMapper.map(u, UserDTO.class)).collect(Collectors.toList());
+        List<UserDTO> adminAssistants = userService.loadUsersByAuthority(Authority.ROLE_ADMIN_ASSISTANT).stream().map(u -> modelMapper.map(u, UserDTO.class)).collect(Collectors.toList());
+        adminsList.setAdmins(admins);
+        adminsList.setAdminAssistants(adminAssistants);
+        return ResponseEntity.ok(adminsList);
     }
 
     @Secured("ROLE_ADMIN")
