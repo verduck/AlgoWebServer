@@ -1,0 +1,20 @@
+= AlgoWebApi With Spring REST Docs
+:toc: left
+
+[[resources-auth]]
+== ─ 인증
+
+[[resources-auth-authenticate]]
+=== └ 인증하기
+
+==== HTTP 요청
+include::{snippets}/auth-controller-test/authenticate/http-request.adoc[]
+
+===== 요청 필드
+include::{snippets}/auth-controller-test/authenticate/request-fields.adoc[]
+
+==== HTTP 응답
+include::{snippets}/auth-controller-test/authenticate/http-response.adoc[]
+
+===== 응답 필드
+include::{snippets}/auth-controller-test/authenticate/response-fields.adoc[]
