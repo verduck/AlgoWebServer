@@ -26,7 +26,7 @@ public class AuthController {
     return ResponseEntity.ok(response);
   }
 
-  @RequestMapping(value = "/reissue", method = RequestMethod.GET)
+  @GetMapping(value = "/reissue")
   public @ResponseBody ResponseEntity<AuthDTO.Response> reissue(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
     AuthDTO.Response response = authService.reissue(httpServletRequest, httpServletResponse);
     return ResponseEntity.ok(response);
