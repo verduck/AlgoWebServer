@@ -30,26 +30,16 @@ public class AuthDTO {
 	}
 
 	public static class Response {
-		private boolean success;
 		private String message;
 		private UserDTO user;
 		private String token;
 
 		public Response() {}
 
-		public Response(boolean success, String message, UserDTO user, String token) {
-			this.success = success;
+		public Response(String message, UserDTO user, String token) {
 			this.message = message;
 			this.user = user;
 			this.token = token;
-		}
-
-		public boolean isSuccess() {
-			return success;
-		}
-
-		public void setSuccess(boolean success) {
-			this.success = success;
 		}
 
 		public String getMessage() {

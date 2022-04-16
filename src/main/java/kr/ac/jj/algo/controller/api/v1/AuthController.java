@@ -1,4 +1,4 @@
-package kr.ac.jj.algo.controller;
+package kr.ac.jj.algo.controller.api.v1;
 
 import kr.ac.jj.algo.dto.AuthDTO;
 import kr.ac.jj.algo.service.AuthService;
@@ -29,11 +29,7 @@ public class AuthController {
   @RequestMapping(value = "/reissue", method = RequestMethod.GET)
   public @ResponseBody ResponseEntity<AuthDTO.Response> reissue(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
     AuthDTO.Response response = authService.reissue(httpServletRequest, httpServletResponse);
-    if (response.isSuccess()) {
-      return ResponseEntity.ok(response);
-    } else {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-    }
+    return ResponseEntity.ok(response);
   }
 
 

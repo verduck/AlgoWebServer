@@ -5,6 +5,8 @@ import kr.ac.jj.algo.domain.User;
 import kr.ac.jj.algo.dto.AuthDTO;
 import kr.ac.jj.algo.dto.Dataset.*;
 import kr.ac.jj.algo.dto.UserDTO;
+import kr.ac.jj.algo.exception.ErrorCode;
+import kr.ac.jj.algo.exception.RestException;
 import kr.ac.jj.algo.security.JwtService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 @Service
@@ -64,9 +67,7 @@ public class AuthService {
         Dataset dataset = xMain.findDatasetById("ds_info");
         HashMap<String, String> datasetMap = new HashMap<>();
         if (dataset == null) {
-            response.setSuccess(false);
-            response.setMessage("학번 또는 비밀번호가 일치하지 않습니다.");
-            return response;
+            throw new RestException(ErrorCode.AUTH_BAD_REQUEST);
         }
         Row row = dataset.getRows().get(0);
         for (Col c : row.getCols()) {
@@ -107,7 +108,6 @@ public class AuthService {
             }
         }
 
-        response.setSuccess(true);
         response.setMessage("로그인에 성공하였습니다.");
         response.setUser(modelMapper.map(user, UserDTO.class));
         response.setToken(jwtService.generateToken(user));
@@ -126,15 +126,16 @@ public class AuthService {
                 }
             }
         }
-        if (refresh != null && jwtService.isExpired(refresh)) {
+        if (refresh == null) {
+            throw new RestException(ErrorCode.NO_TOKEN);
+        } else if (jwtService.isExpired(refresh)) {
+            throw new RestException(ErrorCode.EXPIRED_TOKEN);
+        } else {
             int userId = jwtService.getUserId(refresh);
             User user = userService.loadUserById(userId);
-            response.setSuccess(true);
             response.setMessage("토큰이 재발행되었습니다.");
+            response.setUser(modelMapper.map(user, UserDTO.class));
             response.setToken(jwtService.generateToken(user));
-        } else {
-            response.setSuccess(false);
-            response.setMessage("토큰 재발행에 실패하였습니다.");
         }
         return response;
     }
@@ -273,7 +274,7 @@ public class AuthService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_XML_VALUE);
         headers.setContentType(new MediaType("application", "xml", StandardCharsets.UTF_8));
-        headers.setAccept(Arrays.asList(new MediaType("application", "xml", StandardCharsets.UTF_8)));
+        headers.setAccept(Collections.singletonList(new MediaType("application", "xml", StandardCharsets.UTF_8)));
         HttpEntity<XMain> request = new HttpEntity<>(requestBody, headers);
         result = restTemplate.postForObject(url, request, XMain.class);
 
