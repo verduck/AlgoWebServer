@@ -1,4 +1,4 @@
-package kr.ac.jj.algo.controller;
+package kr.ac.jj.algo.controller.api.v1;
 
 import javassist.NotFoundException;
 import kr.ac.jj.algo.domain.Likes;

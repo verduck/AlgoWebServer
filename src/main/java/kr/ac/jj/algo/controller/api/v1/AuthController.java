@@ -1,4 +1,4 @@
-package kr.ac.jj.algo.controller;
+package kr.ac.jj.algo.controller.api.v1;
 
 import kr.ac.jj.algo.dto.AuthDTO;
 import kr.ac.jj.algo.service.AuthService;
