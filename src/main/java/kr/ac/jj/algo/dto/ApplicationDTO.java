@@ -46,25 +46,14 @@ public class ApplicationDTO {
     }
 
     public static class Response {
-        private boolean success;
         private String message;
         private ApplicationDTO application;
 
         public Response() {}
 
-        public Response(boolean success, String message, ApplicationDTO application) {
-            this.success = success;
+        public Response(String message, ApplicationDTO application) {
             this.message = message;
             this.application = application;
-        }
-
-
-        public boolean isSuccess() {
-            return success;
-        }
-
-        public void setSuccess(boolean success) {
-            this.success = success;
         }
 
         public String getMessage() {
