@@ -18,3 +18,20 @@ include::{snippets}/auth-controller-test/authenticate/http-response.adoc[]
 
 ===== 응답 필드
 include::{snippets}/auth-controller-test/authenticate/response-fields.adoc[]
+
+[[resources-application]]
+== ─ 지원서
+
+[[resources-application-getMyApplication]]
+=== └ 내 지원서 가져오기
+==== HTTP 요청
+include::{snippets}/application-controller-test/get-my-application/http-request.adoc[]
+
+===== 요청 헤더
+include::{snippets}/application-controller-test/get-my-application/request-headers.adoc[]
+
+==== HTTP 응답
+include::{snippets}/application-controller-test/get-my-application/http-response.adoc[]
+
+===== 응답 필드
+include::{snippets}/application-controller-test/get-my-application/response-fields.adoc[]
