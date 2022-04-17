@@ -3,7 +3,6 @@ package kr.ac.jj.algo.controller.api.v1;
 import kr.ac.jj.algo.dto.AuthDTO;
 import kr.ac.jj.algo.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

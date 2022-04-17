@@ -1,12 +1,9 @@
 package kr.ac.jj.algo.controller.api.v1;
 
-import kr.ac.jj.algo.domain.Application;
 import kr.ac.jj.algo.domain.User;
 import kr.ac.jj.algo.dto.ApplicationDTO;
 import kr.ac.jj.algo.service.ApplicationService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
