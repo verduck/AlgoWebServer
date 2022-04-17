@@ -6,7 +6,7 @@ import kr.ac.jj.algo.dto.AuthDTO;
 import kr.ac.jj.algo.dto.Dataset.*;
 import kr.ac.jj.algo.dto.UserDTO;
 import kr.ac.jj.algo.exception.ErrorCode;
-import kr.ac.jj.algo.exception.RestException;
+import kr.ac.jj.algo.exception.ApiException;
 import kr.ac.jj.algo.security.JwtService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -67,7 +66,7 @@ public class AuthService {
         Dataset dataset = xMain.findDatasetById("ds_info");
         HashMap<String, String> datasetMap = new HashMap<>();
         if (dataset == null) {
-            throw new RestException(ErrorCode.AUTH_BAD_REQUEST);
+            throw new ApiException(ErrorCode.AUTH_BAD_REQUEST);
         }
         Row row = dataset.getRows().get(0);
         for (Col c : row.getCols()) {
@@ -127,9 +126,9 @@ public class AuthService {
             }
         }
         if (refresh == null) {
-            throw new RestException(ErrorCode.NO_TOKEN);
+            throw new ApiException(ErrorCode.NO_TOKEN);
         } else if (jwtService.isExpired(refresh)) {
-            throw new RestException(ErrorCode.EXPIRED_TOKEN);
+            throw new ApiException(ErrorCode.EXPIRED_TOKEN);
         } else {
             int userId = jwtService.getUserId(refresh);
             User user = userService.loadUserById(userId);

@@ -1,9 +1,9 @@
 package kr.ac.jj.algo.exception;
 
-public class RestException extends RuntimeException {
+public class ApiException extends RuntimeException {
     private final ErrorCode errorCode;
 
-    public RestException(ErrorCode errorCode) {
+    public ApiException(ErrorCode errorCode) {
         this.errorCode = errorCode;
     }
 
