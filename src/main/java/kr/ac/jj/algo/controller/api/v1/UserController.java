@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
@@ -59,7 +58,6 @@ public class UserController {
         return ResponseEntity.ok(adminsList);
     }
 
-    @Secured("ROLE_ADMIN")
     @GetMapping(value = "/applicants")
     public ResponseEntity<List<UserDTO>> getApplicants() {
         List<UserDTO> response = userService.loadUsersByAuthority(Authority.ROLE_APPLICANT).stream().map(u -> modelMapper.map(u, UserDTO.class)).collect(Collectors.toList());
