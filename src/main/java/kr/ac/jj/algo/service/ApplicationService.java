@@ -2,6 +2,7 @@ package kr.ac.jj.algo.service;
 
 import kr.ac.jj.algo.domain.Application;
 import kr.ac.jj.algo.domain.User;
+import kr.ac.jj.algo.dto.ApplicationDTO;
 import kr.ac.jj.algo.repository.ApplicationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +25,21 @@ public class ApplicationService {
         return applicationRepository.save(application);
     }
 
-    public Application loadApplicationByUser(User user) {
-        Optional<Application> optionalApplication = applicationRepository.findByUser(user);
-        if (optionalApplication.isPresent()) {
-            return optionalApplication.get();
-        } else {
-            Application application = new Application(user, "");
-            application.setUser(user);
-            return createApplication(application);
-        }
+    public ApplicationDTO.Response loadApplicationByUser(User user) {
+        ApplicationDTO.Response response = new ApplicationDTO.Response();
+        Application application = applicationRepository.findByUser(user).orElse(new Application(user, ""));
+        response.setMessage("지원서를 성공적으로 불러왔습니다.");
+        response.setApplication(modelMapper.map(application, ApplicationDTO.class));
+        return response;
     }
 
-    public Application updateApplication(Application application) {
-        return applicationRepository.save(application);
+    public ApplicationDTO.Response patchApplicationByUser(User user, ApplicationDTO.Request request) {
+        ApplicationDTO.Response response = new ApplicationDTO.Response();
+        Application application = applicationRepository.findByUser(user).orElse(new Application(user, ""));
+        application.setIntroduction(request.getIntroduction());
+        application = applicationRepository.save(application);
+        response.setMessage("지원서를 성공적으로 변경하였습니다.");
+        response.setApplication(modelMapper.map(application, ApplicationDTO.class));
+        return response;
     }
 }
