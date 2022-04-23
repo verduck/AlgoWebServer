@@ -40,11 +40,9 @@ public class BoardController {
         Board board;
         try {
             board = boardService.loadBoardByName(name);
-            response.setSuccess(true);
             response.setMessage("게시판 정보를 성공적으로 불러왔습니다.");
             response.setBoard(modelMapper.map(board, BoardDTO.class));
         } catch (NotFoundException e) {
-            response.setSuccess(false);
             response.setMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }

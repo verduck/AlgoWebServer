@@ -66,24 +66,14 @@ public class BoardDTO {
     }
 
     public static class Response {
-        private boolean success;
         private String message;
         private BoardDTO board;
 
         public Response() {}
 
-        public Response(boolean success, String message, BoardDTO board) {
-            this.success = success;
+        public Response(String message, BoardDTO board) {
             this.message = message;
             this.board = board;
-        }
-
-        public boolean isSuccess() {
-            return success;
-        }
-
-        public void setSuccess(boolean success) {
-            this.success = success;
         }
 
         public String isMessage() {
