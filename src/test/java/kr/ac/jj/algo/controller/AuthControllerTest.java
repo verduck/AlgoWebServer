@@ -100,7 +100,6 @@ public class AuthControllerTest {
                                 PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
                         ),
                         PayloadDocumentation.responseFields(
-                                PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("결과 설명"),
                                 PayloadDocumentation.fieldWithPath("user").type(JsonFieldType.OBJECT).description("사용자 정보"),
                                 PayloadDocumentation.fieldWithPath("user.username").type(JsonFieldType.STRING).description("학번"),
                                 PayloadDocumentation.fieldWithPath("user.name").type(JsonFieldType.STRING).description("이름"),
