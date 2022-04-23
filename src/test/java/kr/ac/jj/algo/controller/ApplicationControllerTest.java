@@ -114,17 +114,15 @@ public class ApplicationControllerTest {
                                 headerWithName("Authorization").description("Bearer auth credentials")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과 설명"),
-                                fieldWithPath("application").type(JsonFieldType.OBJECT).description("지원서"),
-                                fieldWithPath("application.user").type(JsonFieldType.OBJECT).description("지원자"),
-                                fieldWithPath("application.user.username").type(JsonFieldType.STRING).description("학번"),
-                                fieldWithPath("application.user.name").type(JsonFieldType.STRING).description("이름"),
-                                fieldWithPath("application.user.birth").type(JsonFieldType.STRING).description("생년월일"),
-                                fieldWithPath("application.user.gender").type(JsonFieldType.STRING).description("성별"),
-                                fieldWithPath("application.user.grade").type(JsonFieldType.NUMBER).description("학년"),
-                                fieldWithPath("application.user.status").type(JsonFieldType.STRING).description("학적상태"),
-                                fieldWithPath("application.user.authority").type(JsonFieldType.STRING).description("권한"),
-                                fieldWithPath("application.introduction").type(JsonFieldType.STRING).description("소개글")
+                                fieldWithPath("user").type(JsonFieldType.OBJECT).description("지원자"),
+                                fieldWithPath("user.username").type(JsonFieldType.STRING).description("학번"),
+                                fieldWithPath("user.name").type(JsonFieldType.STRING).description("이름"),
+                                fieldWithPath("user.birth").type(JsonFieldType.STRING).description("생년월일"),
+                                fieldWithPath("user.gender").type(JsonFieldType.STRING).description("성별"),
+                                fieldWithPath("user.grade").type(JsonFieldType.NUMBER).description("학년"),
+                                fieldWithPath("user.status").type(JsonFieldType.STRING).description("학적상태"),
+                                fieldWithPath("user.authority").type(JsonFieldType.STRING).description("권한"),
+                                fieldWithPath("introduction").type(JsonFieldType.STRING).description("소개글")
                         )
                 ));
 
