@@ -18,34 +18,26 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
-    private final ModelMapper modelMapper;
     private final UserService userService;
 
     @Autowired
-    public UserController(final ModelMapper modelMapper, final UserService userService) {
-        this.modelMapper = modelMapper;
+    public UserController(final UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping
     public UserDTO getMe(@AuthenticationPrincipal User user) {
-        return modelMapper.map(user, UserDTO.class);
+        return userService.convertToUserDTO(user);
     }
 
     @GetMapping(value = "/admins")
-    public ResponseEntity<AdminsListDTO> getAdmins() {
-        AdminsListDTO adminsList = new AdminsListDTO();
-        List<UserDTO> admins = userService.loadUsersByAuthority(Authority.ROLE_ADMIN).stream().map(u -> modelMapper.map(u, UserDTO.class)).collect(Collectors.toList());
-        List<UserDTO> adminAssistants = userService.loadUsersByAuthority(Authority.ROLE_ADMIN_ASSISTANT).stream().map(u -> modelMapper.map(u, UserDTO.class)).collect(Collectors.toList());
-        adminsList.setAdmins(admins);
-        adminsList.setAdminAssistants(adminAssistants);
-        return ResponseEntity.ok(adminsList);
+    public AdminsListDTO getAdmins() {
+        return userService.loadAdmins();
     }
 
     @GetMapping(value = "/applicants")
-    public ResponseEntity<List<UserDTO>> getApplicants() {
-        List<UserDTO> response = userService.loadUsersByAuthority(Authority.ROLE_APPLICANT).stream().map(u -> modelMapper.map(u, UserDTO.class)).collect(Collectors.toList());
-        return ResponseEntity.ok(response);
+    public List<UserDTO> getApplicants() {
+        return userService.loadUsersByAuthority(Authority.ROLE_APPLICANT);
     }
 
 }
