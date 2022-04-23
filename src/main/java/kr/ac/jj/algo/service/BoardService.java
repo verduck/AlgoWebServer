@@ -32,10 +32,6 @@ public class BoardService {
         return boardRepository.findAll().stream().map(b -> modelMapper.map(b, BoardDTO.class)).collect(Collectors.toList());
     }
 
-    public Board loadBoardById(Long id) throws NotFoundException {
-        return boardRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 게시판을 찾을 수 없습니다. id: " + id));
-    }
-
     public Board loadBoardByName(String name) throws NotFoundException {
         return boardRepository.findByName(name).orElseThrow(() -> new NotFoundException("해당 게시판을 찾을 수 없습니다. name: " + name));
     }
