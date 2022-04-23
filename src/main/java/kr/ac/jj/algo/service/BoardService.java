@@ -1,11 +1,11 @@
 package kr.ac.jj.algo.service;
 
-import kr.ac.jj.algo.domain.Board;
-import kr.ac.jj.algo.domain.Post;
 import kr.ac.jj.algo.dto.BoardDTO;
+import kr.ac.jj.algo.dto.PostDTO;
+import kr.ac.jj.algo.exception.ApiException;
+import kr.ac.jj.algo.exception.ErrorCode;
 import kr.ac.jj.algo.repository.BoardRepository;
 import kr.ac.jj.algo.repository.PostRepository;
-import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,11 +32,13 @@ public class BoardService {
         return boardRepository.findAll().stream().map(b -> modelMapper.map(b, BoardDTO.class)).collect(Collectors.toList());
     }
 
-    public Board loadBoardByName(String name) throws NotFoundException {
-        return boardRepository.findByName(name).orElseThrow(() -> new NotFoundException("해당 게시판을 찾을 수 없습니다. name: " + name));
+    public BoardDTO loadBoardByName(String name) {
+        var board = boardRepository.findByName(name).orElseThrow(() -> new ApiException(ErrorCode.BOARD_NOT_FOUND));
+        return modelMapper.map(board, BoardDTO.class);
     }
 
-    public Page<Post> loadPostsByBoard(Board board, Pageable pageable) {
-        return postRepository.findByBoard(board, pageable);
+    public Page<PostDTO> loadPostsByName(String name, Pageable pageable) {
+        var board = boardRepository.findByName(name).orElseThrow(() -> new ApiException(ErrorCode.BOARD_NOT_FOUND));
+        return postRepository.findByBoard(board, pageable).map(p -> modelMapper.map(p, PostDTO.class));
     }
 }
