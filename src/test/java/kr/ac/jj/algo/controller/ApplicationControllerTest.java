@@ -95,12 +95,9 @@ public class ApplicationControllerTest {
         user.setGrade((byte) 1);
         user.setStatus("입학");
         user.setAuthority(Authority.ROLE_APPLICANT);
-        ApplicationDTO application = new ApplicationDTO();
-        application.setUser(modelMapper.map(user, UserDTO.class));
-        application.setIntroduction("안녕하세요. 저는 아무개입니다.");
-        ApplicationDTO.Response response = new ApplicationDTO.Response();
-        response.setMessage("지원서를 성공적으로 불러왔습니다.");
-        response.setApplication(application);
+        ApplicationDTO response = new ApplicationDTO();
+        response.setUser(modelMapper.map(user, UserDTO.class));
+        response.setIntroduction("안녕하세요. 저는 아무개입니다.");
         given(userService.loadUserById(any(Integer.class))).willReturn(user);
         given(applicationService.loadApplicationByUser(any(User.class))).willReturn(response);
 
