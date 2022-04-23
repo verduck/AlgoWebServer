@@ -23,17 +23,17 @@ public class BoardController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BoardDTO>> getAllBoard() {
-        return ResponseEntity.ok(boardService.loadAll());
+    public List<BoardDTO> getAllBoard() {
+        return boardService.loadAll();
     }
 
     @GetMapping(value = "/{name}")
-    public ResponseEntity<BoardDTO> getBoardByName(@PathVariable String name) {
-        return ResponseEntity.ok(boardService.loadBoardByName(name));
+    public BoardDTO getBoardByName(@PathVariable String name) {
+        return boardService.loadBoardByName(name);
     }
 
     @GetMapping(value = "/{name}/posts")
-    public ResponseEntity<Page<PostDTO>> getPostsByName(@PathVariable String name, @RequestParam Pageable pageable) {
-        return ResponseEntity.ok(boardService.loadPostsByName(name, pageable));
+    public Page<PostDTO> getPostsByName(@PathVariable String name, @RequestParam Pageable pageable) {
+        return boardService.loadPostsByName(name, pageable);
     }
 }
