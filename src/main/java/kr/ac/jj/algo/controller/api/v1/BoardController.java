@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/board")
@@ -36,7 +35,7 @@ public class BoardController {
     }
 
     @GetMapping(value = "/{name}")
-    public ResponseEntity<BoardDTO.Response> getBoardById(@PathVariable String name) {
+    public ResponseEntity<BoardDTO.Response> getBoardByName(@PathVariable String name) {
         BoardDTO.Response response = new BoardDTO.Response();
         Board board;
         try {
