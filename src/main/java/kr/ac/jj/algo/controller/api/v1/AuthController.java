@@ -20,15 +20,13 @@ public class AuthController {
   }
 
   @PostMapping(value = "/authenticate")
-  public @ResponseBody ResponseEntity<AuthDTO.Response> authenticate(@RequestBody AuthDTO.Request request, HttpServletResponse httpServletResponse) {
-    AuthDTO.Response response = authService.authenticate(request);
-    return ResponseEntity.ok(response);
+  public @ResponseBody ResponseEntity<AuthDTO> authenticate(@RequestBody AuthDTO.Request request) {
+    return ResponseEntity.ok(authService.authenticate(request));
   }
 
   @GetMapping(value = "/reissue")
-  public @ResponseBody ResponseEntity<AuthDTO.Response> reissue(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-    AuthDTO.Response response = authService.reissue(httpServletRequest, httpServletResponse);
-    return ResponseEntity.ok(response);
+  public @ResponseBody ResponseEntity<AuthDTO> reissue(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    return ResponseEntity.ok(authService.reissue(httpServletRequest, httpServletResponse));
   }
 
 

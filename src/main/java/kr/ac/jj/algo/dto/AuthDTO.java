@@ -1,6 +1,31 @@
 package kr.ac.jj.algo.dto;
 
 public class AuthDTO {
+	private UserDTO user;
+	private String token;
+
+	public AuthDTO() {}
+	public AuthDTO(UserDTO user, String token) {
+		this.user = user;
+		this.token = token;
+	}
+
+	public UserDTO getUser() {
+		return user;
+	}
+
+	public void setUser(UserDTO user) {
+		this.user = user;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	public static class Request {
 		private String username;
 		private String password;
@@ -26,44 +51,6 @@ public class AuthDTO {
 
 		public void setPassword(String password) {
 			this.password = password;
-		}
-	}
-
-	public static class Response {
-		private String message;
-		private UserDTO user;
-		private String token;
-
-		public Response() {}
-
-		public Response(String message, UserDTO user, String token) {
-			this.message = message;
-			this.user = user;
-			this.token = token;
-		}
-
-		public String getMessage() {
-			return message;
-		}
-
-		public void setMessage(String message) {
-			this.message = message;
-		}
-
-		public String getToken() {
-			return token;
-		}
-
-		public void setToken(String token) {
-			this.token = token;
-		}
-
-		public UserDTO getUser() {
-			return user;
-		}
-
-		public void setUser(UserDTO user) {
-			this.user = user;
 		}
 	}
 }

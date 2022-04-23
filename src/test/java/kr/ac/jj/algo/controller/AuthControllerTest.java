@@ -78,8 +78,7 @@ public class AuthControllerTest {
         user.setGrade((byte) 1);
         user.setStatus("입학");
         user.setAuthority(Authority.ROLE_USER);
-        AuthDTO.Response response = new AuthDTO.Response();
-        response.setMessage("로그인에 성공하였습니다.");
+        AuthDTO response = new AuthDTO();
         response.setUser(user);
         response.setToken(TOKEN);
         given(authService.authenticate(any(AuthDTO.Request.class))).willReturn(response);

@@ -59,8 +59,8 @@ public class AuthService {
         return restTemplate;
     }
 
-    public AuthDTO.Response authenticate(AuthDTO.Request request) {
-        AuthDTO.Response response = new AuthDTO.Response();
+    public AuthDTO authenticate(AuthDTO.Request request) {
+        AuthDTO response = new AuthDTO();
         RestTemplate restTemplate = restTemplate();
         XMain xMain = loginJJInstar(restTemplate, request.getUsername(), request.getPassword());
         Dataset dataset = xMain.findDatasetById("ds_info");
@@ -107,14 +107,13 @@ public class AuthService {
             }
         }
 
-        response.setMessage("로그인에 성공하였습니다.");
         response.setUser(modelMapper.map(user, UserDTO.class));
         response.setToken(jwtService.generateToken(user));
         return response;
     }
 
-    public AuthDTO.Response reissue(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        AuthDTO.Response response = new AuthDTO.Response();
+    public AuthDTO reissue(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        AuthDTO response = new AuthDTO();
         Cookie[] cookies = httpServletRequest.getCookies();
         String refresh = null;
         if (cookies != null) {
@@ -132,7 +131,6 @@ public class AuthService {
         } else {
             int userId = jwtService.getUserId(refresh);
             User user = userService.loadUserById(userId);
-            response.setMessage("토큰이 재발행되었습니다.");
             response.setUser(modelMapper.map(user, UserDTO.class));
             response.setToken(jwtService.generateToken(user));
         }
