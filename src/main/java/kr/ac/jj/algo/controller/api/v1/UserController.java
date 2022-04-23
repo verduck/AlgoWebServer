@@ -28,24 +28,8 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<UserDTO.Response> getMe(@AuthenticationPrincipal User user) {
-        UserDTO.Response response = new UserDTO.Response();
-        response.setSuccess(true);
-        response.setMessage("사용자 정보를 성공적으로 불러왔습니다.");
-        response.setUser(modelMapper.map(user, UserDTO.class));
-        return ResponseEntity.ok(response);
-    }
-
-    @PutMapping
-    public ResponseEntity<UserDTO.Response> putMe(@AuthenticationPrincipal User user, @RequestBody UserDTO.Request request) {
-        UserDTO.Response response = new UserDTO.Response();
-        User u = modelMapper.map(request, User.class);
-        u.setId(user.getId());
-        user = userService.updateUser(u);
-        response.setSuccess(true);
-        response.setMessage("사용자 정보를 성공적으로 변경하였습니다.");
-        response.setUser(modelMapper.map(user, UserDTO.class));
-        return ResponseEntity.ok(response);
+    public UserDTO getMe(@AuthenticationPrincipal User user) {
+        return modelMapper.map(user, UserDTO.class);
     }
 
     @GetMapping(value = "/admins")
