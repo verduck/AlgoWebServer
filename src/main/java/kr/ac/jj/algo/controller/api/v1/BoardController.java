@@ -32,8 +32,7 @@ public class BoardController {
 
     @GetMapping
     public ResponseEntity<List<BoardDTO>> getAllBoard() {
-        List<BoardDTO> response = boardService.loadAll().stream().map(b -> modelMapper.map(b, BoardDTO.class)).collect(Collectors.toList());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(boardService.loadAll());
     }
 
     @GetMapping(value = "/{name}")
