@@ -92,14 +92,14 @@ public class PostDTO {
     this.numLikes = numLikes;
   }
 
-  public static class Request {
+  public static class Create {
     private String title;
     private String content;
-    private BoardDTO board;
+    private BoardDTO.Request board;
 
-    public Request() {}
+    public Create() {}
 
-    public Request(Integer id, String title, String content, BoardDTO board) {
+    public Create(Integer id, String title, String content, BoardDTO.Request board) {
       this.title = title;
       this.content = content;
       this.board = board;
@@ -121,11 +121,11 @@ public class PostDTO {
       this.content = content;
     }
 
-    public BoardDTO getBoard() {
+    public BoardDTO.Request getBoard() {
       return board;
     }
 
-    public void setBoard(BoardDTO board) {
+    public void setBoard(BoardDTO.Request board) {
       this.board = board;
     }
   }
