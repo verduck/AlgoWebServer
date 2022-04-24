@@ -114,7 +114,9 @@ public class ApplicationControllerTest {
                                 headerWithName("Authorization").description("Bearer auth credentials")
                         ),
                         responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("지원서 번호"),
                                 fieldWithPath("user").type(JsonFieldType.OBJECT).description("지원자"),
+                                fieldWithPath("user.id").type(JsonFieldType.NUMBER).description("지원자 번호"),
                                 fieldWithPath("user.username").type(JsonFieldType.STRING).description("학번"),
                                 fieldWithPath("user.name").type(JsonFieldType.STRING).description("이름"),
                                 fieldWithPath("user.birth").type(JsonFieldType.STRING).description("생년월일"),

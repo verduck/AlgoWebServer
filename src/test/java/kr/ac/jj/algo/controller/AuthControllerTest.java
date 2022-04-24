@@ -36,6 +36,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
@@ -95,20 +96,21 @@ public class AuthControllerTest {
 
         result.andExpect(status().isOk())
                 .andDo(document.document(
-                        PayloadDocumentation.requestFields(
-                                PayloadDocumentation.fieldWithPath("username").type(JsonFieldType.STRING).description("학번"),
-                                PayloadDocumentation.fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
+                        requestFields(
+                                fieldWithPath("username").type(JsonFieldType.STRING).description("학번"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
                         ),
-                        PayloadDocumentation.responseFields(
-                                PayloadDocumentation.fieldWithPath("user").type(JsonFieldType.OBJECT).description("사용자 정보"),
-                                PayloadDocumentation.fieldWithPath("user.username").type(JsonFieldType.STRING).description("학번"),
-                                PayloadDocumentation.fieldWithPath("user.name").type(JsonFieldType.STRING).description("이름"),
-                                PayloadDocumentation.fieldWithPath("user.birth").type(JsonFieldType.STRING).description("생년월일"),
-                                PayloadDocumentation.fieldWithPath("user.gender").type(JsonFieldType.STRING).description("성별"),
-                                PayloadDocumentation.fieldWithPath("user.grade").type(JsonFieldType.NUMBER).description("학년"),
-                                PayloadDocumentation.fieldWithPath("user.status").type(JsonFieldType.STRING).description("학적상태"),
-                                PayloadDocumentation.fieldWithPath("user.authority").type(JsonFieldType.STRING).description("권한"),
-                                PayloadDocumentation.fieldWithPath("token").type(JsonFieldType.STRING).description("토큰")
+                        responseFields(
+                                fieldWithPath("user").type(JsonFieldType.OBJECT).description("사용자 정보"),
+                                fieldWithPath("user.id").type(JsonFieldType.NUMBER).description("사용자 번호"),
+                                fieldWithPath("user.username").type(JsonFieldType.STRING).description("학번"),
+                                fieldWithPath("user.name").type(JsonFieldType.STRING).description("이름"),
+                                fieldWithPath("user.birth").type(JsonFieldType.STRING).description("생년월일"),
+                                fieldWithPath("user.gender").type(JsonFieldType.STRING).description("성별"),
+                                fieldWithPath("user.grade").type(JsonFieldType.NUMBER).description("학년"),
+                                fieldWithPath("user.status").type(JsonFieldType.STRING).description("학적상태"),
+                                fieldWithPath("user.authority").type(JsonFieldType.STRING).description("권한"),
+                                fieldWithPath("token").type(JsonFieldType.STRING).description("토큰")
                         )
                 ));
 
