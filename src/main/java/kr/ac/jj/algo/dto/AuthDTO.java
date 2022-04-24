@@ -1,20 +1,20 @@
 package kr.ac.jj.algo.dto;
 
 public class AuthDTO {
-	private UserDTO user;
+	private UserDTO.Detail user;
 	private String token;
 
 	public AuthDTO() {}
-	public AuthDTO(UserDTO user, String token) {
+	public AuthDTO(UserDTO.Detail user, String token) {
 		this.user = user;
 		this.token = token;
 	}
 
-	public UserDTO getUser() {
+	public UserDTO.Detail getUser() {
 		return user;
 	}
 
-	public void setUser(UserDTO user) {
+	public void setUser(UserDTO.Detail user) {
 		this.user = user;
 	}
 

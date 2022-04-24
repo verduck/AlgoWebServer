@@ -2,22 +2,22 @@ package kr.ac.jj.algo.dto;
 
 public class ApplicationDTO {
     private int id;
-    private UserDTO user;
+    private UserDTO.Detail user;
     private String introduction;
 
     public ApplicationDTO() {}
 
-    public ApplicationDTO(int id, UserDTO user, String introduction) {
+    public ApplicationDTO(int id, UserDTO.Detail user, String introduction) {
         this.id = id;
         this.user = user;
         this.introduction = introduction;
     }
 
-    public UserDTO getUser() {
+    public UserDTO.Detail getUser() {
         return user;
     }
 
-    public void setUser(UserDTO user) {
+    public void setUser(UserDTO.Detail user) {
         this.user = user;
     }
 
