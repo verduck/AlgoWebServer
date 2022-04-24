@@ -30,15 +30,8 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostDTO.Response> writePost(@AuthenticationPrincipal User user, @RequestBody PostDTO.Request request) {
-        PostDTO.Response response = new PostDTO.Response();
-        Post post = modelMapper.map(request, Post.class);
-        post.setUser(user);
-        post = postService.createPost(post);
-        response.setSuccess(true);
-        response.setMessage("게시물을 성공적으로 작성하였습니다.");
-        response.setPost(modelMapper.map(post, PostDTO.class));
-        return ResponseEntity.ok(response);
+    public PostDTO writePost(@AuthenticationPrincipal User user, @RequestBody PostDTO.Create request) {
+        return postService.createPost(user, request);
     }
 
     @GetMapping
@@ -69,7 +62,7 @@ public class PostController {
     }
 
     @PutMapping(value ="/{id}")
-    public ResponseEntity<PostDTO.Response> putPostById(@AuthenticationPrincipal User user, @PathVariable("id") Integer id, @RequestBody PostDTO.Request request) {
+    public ResponseEntity<PostDTO.Response> putPostById(@AuthenticationPrincipal User user, @PathVariable("id") Integer id, @RequestBody PostDTO.Create create) {
         PostDTO.Response response = new PostDTO.Response();
         Post post;
         try {
@@ -85,8 +78,8 @@ public class PostController {
             response.setPost(modelMapper.map(post, PostDTO.class));
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
-        post.setTitle(request.getTitle());
-        post.setContent(request.getContent());
+        post.setTitle(create.getTitle());
+        post.setContent(create.getContent());
         post = postService.updatePost(post);
         response.setSuccess(true);
         response.setMessage("게시물을 성공적으로 수정하였습니다.");
@@ -95,7 +88,7 @@ public class PostController {
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<PostDTO.Response> patchPostById(@AuthenticationPrincipal User user, @PathVariable("id") Integer id, @RequestBody PostDTO.Request request) {
+    public ResponseEntity<PostDTO.Response> patchPostById(@AuthenticationPrincipal User user, @PathVariable("id") Integer id, @RequestBody PostDTO.Create create) {
         PostDTO.Response response = new PostDTO.Response();
         Post post;
         try {
@@ -111,11 +104,11 @@ public class PostController {
             response.setPost(modelMapper.map(post, PostDTO.class));
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
-        if (request.getTitle() != null) {
-            post.setTitle(request.getTitle());
+        if (create.getTitle() != null) {
+            post.setTitle(create.getTitle());
         }
-        if (request.getContent() != null) {
-            post.setContent(request.getContent());
+        if (create.getContent() != null) {
+            post.setContent(create.getContent());
         }
         post = postService.updatePost(post);
         response.setSuccess(true);

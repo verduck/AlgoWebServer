@@ -5,9 +5,11 @@ import kr.ac.jj.algo.domain.Likes;
 import kr.ac.jj.algo.domain.Post;
 import kr.ac.jj.algo.domain.Reply;
 import kr.ac.jj.algo.domain.User;
+import kr.ac.jj.algo.dto.PostDTO;
 import kr.ac.jj.algo.repository.LikesRepository;
 import kr.ac.jj.algo.repository.PostRepository;
 import kr.ac.jj.algo.repository.ReplyRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,20 +20,25 @@ import java.util.Optional;
 
 @Service
 public class PostService {
+    private final ModelMapper modelMapper;
     private final PostRepository postRepository;
     private final ReplyRepository replyRepository;
     private final LikesRepository likesRepository;
 
     @Autowired
-    public PostService(final PostRepository postRepository, ReplyRepository replyRepository, final LikesRepository likesRepository) {
+    public PostService(ModelMapper modelMapper, final PostRepository postRepository, ReplyRepository replyRepository, final LikesRepository likesRepository) {
+        this.modelMapper = modelMapper;
         this.postRepository = postRepository;
         this.replyRepository = replyRepository;
         this.likesRepository = likesRepository;
     }
 
-    public Post createPost(Post post) {
+    public PostDTO createPost(User user, PostDTO.Create request) {
+        Post post = modelMapper.map(request, Post.class);
+        post.setUser(user);
         post.setCreatedAt(LocalDateTime.now());
-        return postRepository.save(post);
+        post = postRepository.save(post);
+        return modelMapper.map(post, PostDTO.class);
     }
 
     public Post updatePost(Post post) {
