@@ -1,6 +1,7 @@
 package kr.ac.jj.algo.dto;
 
 public class BoardDTO {
+    private Long id;
     private String name;
     private String value;
     private String icon;
@@ -8,6 +9,7 @@ public class BoardDTO {
     public BoardDTO() {}
 
     public BoardDTO(Long id, String name, String value, String icon) {
+        this.id = id;
         this.name = name;
         this.value = value;
         this.icon = icon;
@@ -35,6 +37,14 @@ public class BoardDTO {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public static class Request {

@@ -5,6 +5,7 @@ import kr.ac.jj.algo.domain.Authority;
 import java.time.LocalDate;
 
 public class UserDTO {
+    private Integer id;
     private String username;
     private String name;
     private LocalDate birth;
@@ -15,7 +16,8 @@ public class UserDTO {
 
     public UserDTO() {}
 
-    public UserDTO(String username, String name, LocalDate birth, char gender, byte grade, String status, Authority authority) {
+    public UserDTO(Integer id, String username, String name, LocalDate birth, char gender, byte grade, String status, Authority authority) {
+        this.id = id;
         this.username = username;
         this.name = name;
         this.birth = birth;
@@ -79,6 +81,14 @@ public class UserDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public static class Request {

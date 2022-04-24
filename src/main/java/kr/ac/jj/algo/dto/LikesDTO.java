@@ -1,12 +1,14 @@
 package kr.ac.jj.algo.dto;
 
 public class LikesDTO {
+    private Integer id;
     private UserDTO user;
     private PostDTO post;
 
     public LikesDTO() {}
 
-    public LikesDTO(UserDTO user, PostDTO post) {
+    public LikesDTO(Integer id, UserDTO user, PostDTO post) {
+        this.id = id;
         this.user = user;
         this.post = post;
     }
@@ -25,6 +27,14 @@ public class LikesDTO {
 
     public void setPost(PostDTO post) {
         this.post = post;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public static class Response {
