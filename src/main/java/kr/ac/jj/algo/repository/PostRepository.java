@@ -8,8 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
+    Optional<Post> findById(Integer id);
     Page<Post> findByUser(User user, Pageable pageable);
     Page<Post> findAll(Pageable pageable);
     Page<Post> findByBoard(Board board, Pageable pageable);
