@@ -36,6 +36,11 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
     }
 
+    public UserDTO.Detail loadUserDetailByUsername(String username) {
+        var user = loadUserByUsername(username);
+        return modelMapper.map(user, UserDTO.Detail.class);
+    }
+
     public User loadUserById(Integer id) {
         return userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
     }
