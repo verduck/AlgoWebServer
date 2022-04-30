@@ -116,6 +116,18 @@ public class User implements UserDetails {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof User)) {
+            return false;
+        }
+        User u = (User) obj;
+        return this.id.equals(u.id);
+    }
+
+    @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
