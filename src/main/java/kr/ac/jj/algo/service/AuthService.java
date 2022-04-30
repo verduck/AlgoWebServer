@@ -107,7 +107,7 @@ public class AuthService {
             }
         }
 
-        response.setUser(modelMapper.map(user, UserDTO.class));
+        response.setUser(modelMapper.map(user, UserDTO.Detail.class));
         response.setToken(jwtService.generateToken(user));
         return response;
     }
@@ -131,7 +131,7 @@ public class AuthService {
         } else {
             int userId = jwtService.getUserId(refresh);
             User user = userService.loadUserById(userId);
-            response.setUser(modelMapper.map(user, UserDTO.class));
+            response.setUser(modelMapper.map(user, UserDTO.Detail.class));
             response.setToken(jwtService.generateToken(user));
         }
         return response;
