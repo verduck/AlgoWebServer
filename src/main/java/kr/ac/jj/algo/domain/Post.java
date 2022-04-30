@@ -12,21 +12,16 @@ public class Post {
     private Integer id;
     private String title;
     private String content;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
-
     @ManyToOne
     @JoinColumn(name = "author")
     private User user;
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Likes> likes = new ArrayList<>();
-
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Reply> replies = new ArrayList<>();
 

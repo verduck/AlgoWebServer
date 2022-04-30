@@ -5,7 +5,11 @@ import kr.ac.jj.algo.domain.Likes;
 import kr.ac.jj.algo.domain.Post;
 import kr.ac.jj.algo.domain.Reply;
 import kr.ac.jj.algo.domain.User;
+import kr.ac.jj.algo.dto.LikesDTO;
 import kr.ac.jj.algo.dto.PostDTO;
+import kr.ac.jj.algo.dto.ReplyDTO;
+import kr.ac.jj.algo.exception.ApiException;
+import kr.ac.jj.algo.exception.ErrorCode;
 import kr.ac.jj.algo.repository.LikesRepository;
 import kr.ac.jj.algo.repository.PostRepository;
 import kr.ac.jj.algo.repository.ReplyRepository;
@@ -33,12 +37,31 @@ public class PostService {
         this.likesRepository = likesRepository;
     }
 
-    public PostDTO createPost(User user, PostDTO.Create request) {
+    public PostDTO createPost(User user, PostDTO.Creation request) {
         Post post = modelMapper.map(request, Post.class);
         post.setUser(user);
         post.setCreatedAt(LocalDateTime.now());
         post = postRepository.save(post);
         return modelMapper.map(post, PostDTO.class);
+    }
+
+    public PostDTO.Detail patchPostById(User user, Integer id, PostDTO.Patch request) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
+        if (!post.getUser().equals(user)) {
+            throw new ApiException(ErrorCode.NO_PERMISSION);
+        }
+        post.setTitle(request.getTitle());
+        post.setContent(request.getContent());
+        post = updatePost(post);
+        return modelMapper.map(post, PostDTO.Detail.class);
+    }
+
+    public void deletePostById(User user, Integer id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
+        if (!post.getUser().equals(user)) {
+            throw new ApiException(ErrorCode.NO_PERMISSION);
+        }
+        deletePost(post);
     }
 
     public Post updatePost(Post post) {
@@ -50,31 +73,34 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    public Post loadPostById(int id) throws NotFoundException {
-        return postRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 게시물을 찾을 수 없습니다. id : " + id));
+    public PostDTO.Detail loadPostById(int id) {
+        var post = postRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
+        var result = modelMapper.map(post, PostDTO.Detail.class);
+        result.setNumLikes(loadLikesCountByPostId(result.getId()));
+        return result;
     }
 
     public Page<Post> loadPostsByUser(User user, Pageable pageable) {
         return postRepository.findByUser(user, pageable);
     }
 
-    public Page<Post> loadPosts(Pageable pageable) {
-        return postRepository.findAll(pageable);
+    public Page<PostDTO> loadPosts(Pageable pageable) {
+        var result= postRepository.findAll(pageable)
+                .map(p -> modelMapper.map(p, PostDTO.class));
+        result.forEach(p -> p.setNumLikes(loadLikesCountByPostId(p.getId())));
+        return result;
     }
 
-    public Page<Reply> loadRepliesByPostId(Integer id, Pageable pageable) throws NotFoundException {
-        Post post = postRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 개시물을 찾을 수 없습니다. id: " + id));
-        return replyRepository.findByPost(post, pageable);
+    public Page<ReplyDTO> loadRepliesByPostId(Integer id, Pageable pageable) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
+        return replyRepository.findByPost(post, pageable).map(r -> modelMapper.map(r, ReplyDTO.class));
     }
 
-    public Likes likePostById(Integer id, User user) throws NotFoundException {
-        Post post = postRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 게시물을 찾을 수 없습니다. id: " + id));
-        Optional<Likes> optionalLikes = likesRepository.findByUserAndPost(user, post);
-        if (optionalLikes.isPresent()) {
-            return optionalLikes.get();
-        }
-        Likes likes = new Likes(user, post);
-        return likesRepository.save(likes);
+    public LikesDTO likePostById(Integer id, User user) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
+        Likes likes = likesRepository.findByUserAndPost(user, post).orElse(new Likes(user, post));
+        likes = likesRepository.save(likes);
+        return modelMapper.map(likes, LikesDTO.class);
     }
 
     public Long loadLikesCountByPostId(Integer id) {
