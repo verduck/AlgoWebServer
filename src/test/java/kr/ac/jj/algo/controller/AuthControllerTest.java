@@ -72,6 +72,7 @@ public class AuthControllerTest {
     @Test
     public void authenticate() throws Exception {
         UserDTO.Detail user = new UserDTO.Detail();
+        user.setId(0);
         user.setUsername("203268001");
         user.setName("아무개");
         user.setBirth(LocalDate.of(2012, 3, 22));
